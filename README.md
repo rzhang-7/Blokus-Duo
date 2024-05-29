@@ -93,7 +93,7 @@ For the characters that represent the boards:
 |`D`,`C`,`S`,`B`,`A`| Represent different ship types|
 |`O`| Represents a miss |
 
-The game should be able to load the SaveExample.txt file correctly, and saved games should follow a similar file format.
+The game should be able to load the `SaveExample.txt` file correctly, and saved games should follow a similar file format.
 
 When loading a game, the player SHOULD NOT be able to see the Computer's ships, they should be displayed as unused squares until they have been hit.
 
