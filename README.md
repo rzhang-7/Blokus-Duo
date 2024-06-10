@@ -2,11 +2,13 @@
 
 Blokus Duo is the two-player variant of the popular board game Blokus. It is played on a 14 x 14 grid.
 
-Players will each receive 21 tetris-like tiles. They will take turns placing a series of tetris-like pieces on the board. Their goal is to cover as much of the grid as possible.
+Players each start with a set of 21 unique tetris-like tiles. They will then take turns placing their pieces on the board. Their goal is to cover as much of the grid as possible.
 
 On the first turn, each player will place one of their pieces on the starting points indicated by the `·` symbol.
 
-Subsequently placed pieces must touch at least one corner and no sides of previously placed pieces. In game, available spots will be indicated by `·` symbols. The following examples demonstrate valid and invalid placements respectively.
+Subsequently placed pieces must touch at least one corner and no sides of previously placed pieces. In game, available spots will be indicated by `·` symbols.
+
+The following examples demonstrate valid and invalid placements respectively:
 
 ```bf
 [ ][ ][ ][ ][ ][ ]       [ ][ ][ ][ ][ ][ ]
@@ -33,6 +35,34 @@ The final score of each player will be the total number of grid tiles occupied b
 In this program, the player will be able to play against an AI opponent for the second player, with the option for variable difficulty.
 
 A web version of this game can be found [here](https://lefun.fun/en/g/bloco).
+
+## Pieces
+
+The following table displays the available pieces in game:
+
+| Piece Shape | Name |
+| --- | --- |
+| [] | `I1` |
+| [][] | `I2` |
+| []<br>[][] | `V3` |
+| [][][] | `I3` |
+| [][]<br>[][] | `O` |
+| [][][]<br>&nbsp;&nbsp;[] | `T4` |
+| []<br>[][][] | `L4` |
+| [][]<br>&nbsp;&nbsp;[][] | `Z4` |
+| [][][][] | `I4` |
+| &nbsp;&nbsp;[]<br>[][][]<br>[] | `F` |
+| &nbsp;&nbsp;[]<br>[][][]<br>&nbsp;&nbsp;[] | `X` |
+| [][]<br>[][]<br>[] | `P` |
+| []<br>[][]<br>&nbsp;&nbsp;[][] | `W` |
+| [][]<br>&nbsp;&nbsp;[]<br>&nbsp;&nbsp;[][] | `Z5` |
+| []&nbsp;&nbsp;[]<br>[][][] | `U` |
+| [][][]<br>&nbsp;&nbsp;[]<br>&nbsp;&nbsp;[] | `T5` |
+| []<br>[]<br>[][][] | `V5` |
+| &nbsp;&nbsp;[]<br>[][][][] | `Y` |
+| []<br>[][][][] | `L5` |
+| &nbsp;&nbsp;[][][]<br>[][] | `N` |
+| [][][][][] | `I5` |
 
 ## Requirements
 
