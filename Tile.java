@@ -10,6 +10,7 @@ public class Tile {
     // private int x = -1;
     // private int y = -1;
     private final int points;
+    private final boolean[][] printSquares;
     private int rows;
     private int cols;
     private boolean used;
@@ -29,6 +30,12 @@ public class Tile {
         this.rows = rows;
         this.cols = cols;
         this.squares = squares;
+
+        // Get deep copy of squares
+        printSquares = new boolean[rows][cols];
+        for(int i = 0; i<rows; i++) {
+            printSquares[i] = Arrays.copyOf(squares[i], cols);
+        }
     }
 
     /*
@@ -65,6 +72,15 @@ public class Tile {
      */
     public boolean[][] getSquares() {
         return squares;
+    }
+
+    /*
+     * Method name: getPrintSquares()
+     * Return type: boolean[][] - The square area taken up by the Tile instance
+     * Description: Accessor method for the squares attribute in the Tile class.
+     */
+    public boolean[][] getPrintSquares() {
+        return printSquares;
     }
 
     // public boolean[][] getSquaresCopy() {
