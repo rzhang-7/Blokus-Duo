@@ -4,9 +4,9 @@ Blokus Duo is the two-player variant of the popular board game Blokus. It is pla
 
 Players each start with a set of 21 unique tetris-like tiles. They will then take turns placing their pieces on the board. Their goal is to cover as much of the grid as possible.
 
-On the first turn, each player will place one of their pieces on the starting points indicated by the `·` symbol.
+On the first turn, each player will place one of their pieces on the starting points indicated by the `*` symbol.
 
-Subsequently placed pieces must touch at least one corner and no sides of previously placed pieces. In game, available spots will be indicated by `·` symbols.
+Subsequently placed pieces must touch at least one corner and no sides of previously placed pieces. In game, available spots will be indicated by `*` symbols.
 
 The following examples demonstrate valid and invalid placements respectively:
 
