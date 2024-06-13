@@ -21,7 +21,7 @@ public class BlokusDuo {
     public static final char P1 = '@';
     public static final char P2 = 'O';
     public static final char INVALID = 'X';
-    public static final char AVAIL = '·';
+    public static final char AVAIL = '*';
 
     // Tile controls
     private static final char UP = 'W';
@@ -96,7 +96,7 @@ public class BlokusDuo {
                         String.format("[O][O][O] [11] " + format + " [12] " + format + " [@][@]",
                                 (saveNames.size() >= 11 ? saveNames.get(10) : ""),
                                 (saveNames.size() >= 12 ? saveNames.get(11) : "")),
-                        "   [@]              [" + QUIT_VAL + "] Main Menu               [O][@]",
+                        "   [@]              [" + QUIT_VAL + "] Quit                    [O][@]",
                         "[@][@][@]                                       [O][@]",
                         "[O][@][O][@][@][@]      [@][@][O]            [O][O][O]",
                         "[O][O][O]   [@][@][O][O][O][@]   [O][O][O][O][@][@][@]"));
@@ -114,7 +114,7 @@ public class BlokusDuo {
      */
 
     public static void printBoard(char[][] board) {
-
+        System.out.println();
         // Print column coordinates
         System.out.print("   ");
         for (int i = 1; i <= BOARD_SIZE; i++) {
@@ -125,7 +125,7 @@ public class BlokusDuo {
         // Print board
         for (int i = 0; i < BOARD_SIZE; i++) {
             // Print row coordinates
-            System.out.printf("%-3d", i + 1);
+            System.out.printf("%2d ", i + 1);
 
             for (int j = 0; j < BOARD_SIZE; j++) {
                 System.out.printf("[%c]", (board[i][j] == (char) 0 ? ' ' : board[i][j]));
@@ -156,7 +156,6 @@ public class BlokusDuo {
     public static void printTiles(Map<String, Tile> tiles, char playerChar) {
         final String[][] TILE_ROWS = { { "I1", "I2", "I3", "V3", "O" }, { "T4", "L4", "Z4", "I4" },
                 { "F", "X", "P", "W" }, { "Z5", "U", "T5", "V5" }, { "N", "Y", "L5" }, { "I5" } };
-        Map<String, Tile> allTiles = Tile.newTileSet();
         Tile t;
         int maxRow = 0;
         boolean[][] tileSquares;
@@ -166,7 +165,7 @@ public class BlokusDuo {
 
             // Get max number of rows needed
             for (String tileName : line) {
-                t = allTiles.get(tileName);
+                t = tiles.get(tileName);
                 maxRow = Math.max(maxRow, t.getRows());
             }
 
@@ -174,7 +173,7 @@ public class BlokusDuo {
             for (int i = 0; i < maxRow; i++) {
                 for (String tileName : line) {
                     // Get tile
-                    t = allTiles.get(tileName);
+                    t = tiles.get(tileName);
                     tileSquares = t.getPrintSquares();
 
                     // Print tile segment
@@ -183,6 +182,7 @@ public class BlokusDuo {
                         if (i >= maxRow - t.getRows()) {
                             // Check if empty tile
                             if (tileSquares[i - (maxRow - t.getRows())][j]) {
+                                // TODO: Use invalid character if tile cannot be placed
                                 // Fill with player colour if unused
                                 System.out.printf("[%c]", (t.getUsed() ? ' ' : playerChar));
                             } else {
@@ -200,10 +200,13 @@ public class BlokusDuo {
                 System.out.println();
             }
 
+            // Reset max row value
+            maxRow = 0;
+
             // Print tile names, centered to its corresponding tile piece
             for (String tileName : line) {
                 // Get tile
-                t = allTiles.get(tileName);
+                t = tiles.get(tileName);
 
                 // Even number of columns; name goes under between two center squares
                 if (t.getCols() % 2 == 0) {
@@ -258,11 +261,322 @@ public class BlokusDuo {
 
     public static void runGame(char[][] board, int p1Score, Map<String, Tile> p1Tiles, int p2Score,
             Map<String, Tile> p2Tiles, boolean isHard) {
-        boolean running = true;
+        // Declare constants and variables
+        final int MAX_SAVE_FILES = 12;
+        int saveIndex;
+        String tileName, quitOption, quitConfirmation, choiceSave, overwriteConfirmation;
+        ArrayList<String> saveNames;
+        Tile selectedTile;
+        boolean p1CanMove = true, p2CanMove = true, running = true, tileSelect = false, validQuit = false,
+                validSave = false;
+        Scanner sc = IO.newScanner();
+
+        // Game loop
         while (running) {
-            printBoard(board);
-            printScore(p1Score, p2Score);
-            printTiles(p1Tiles, P1);
+            // If Player 1 has any valid moves
+            if (p1CanMove) {
+                // Select a tile
+                do {
+                    // Print game information
+                    printBoard(board);
+                    printScore(p1Score, p2Score);
+                    printTiles(p1Tiles, P1); // May be p2 if doing 2-player
+
+                    // Get user input for tile
+                    System.out.printf("Select a tile to place (%s to quit): ", QUIT_VAL);
+                    tileName = sc.nextLine().toUpperCase(); // convert to upper for case insensitivity
+
+                    // Return to main menu or save game
+                    if (tileName.equals(QUIT_VAL)) {
+                        do {
+                            // Selection menu
+                            System.out.println("What would you like to do?");
+                            System.out.println();
+                            System.out.println("  [1] Save and quit game");
+                            System.out.println("  [2] Quit game without saving");
+                            System.out.println("  [" + QUIT_VAL + "] Resume");
+
+                            // Get quit option
+                            quitOption = sc.nextLine().toLowerCase();
+
+                            switch (quitOption) {
+                                // Save and quit the game
+                                case "1":
+                                case "[1]":
+                                case "save":
+                                    // Get save file names
+                                    saveNames = Saves.getSaveNames();
+
+                                    // Overwrite save names if save file full
+                                    if (saveNames.size() == MAX_SAVE_FILES) {
+                                        do {
+                                            // Get save file name from user
+                                            printMenu(2);
+                                            System.out
+                                                    .print("Save file is full. Please select a save file to overwrite: ");
+                                            choiceSave = sc.nextLine();
+
+                                            // User chose to quit; exit loop
+                                            if (choiceSave.equals(QUIT_VAL) || choiceSave.equals("[" + QUIT_VAL + "]")
+                                                    || choiceSave.toLowerCase().equals("quit")) {
+                                                validSave = true;
+                                            }
+                                            // Overwrite existing save file
+                                            else {
+                                                saveIndex = findSaveIndex(choiceSave, saveNames);
+                                                // Found save file
+                                                if (saveIndex != -1) {
+                                                    choiceSave = saveNames.get(saveIndex);
+                                                    // Overwrite save file
+                                                    System.out.println("Overwriting " + choiceSave + "...");
+                                                    try {
+                                                        Saves.writeSave(choiceSave, board, p1Score, p1Tiles, p2Score,
+                                                                p2Tiles, isHard);
+                                                        System.out.println("Save successfully overwritten.");
+                                                    }
+                                                    // File overwrite was unsuccessful
+                                                    catch (IOException e) {
+                                                        System.out.println(e + " Problem writing file.");
+                                                    }
+
+                                                    System.out.println("Returning to main menu...");
+                                                    System.out.println("<Press [Enter] to continue.");
+                                                    sc.nextLine();
+
+                                                    // Exit loop when done and return to main menu
+                                                    validSave = true;
+                                                    tileSelect = true; // Break out of tile selection
+                                                    running = false; // Break out of game loop
+                                                    validQuit = true; // Break out of quit loop
+                                                }
+
+                                                // Did not find save
+                                                else {
+                                                    System.out.println();
+                                                    System.out.println("ERROR: Invalid selection.");
+                                                    System.out.print("<Press [Enter] to continue>");
+                                                    sc.nextLine();
+                                                }
+                                            }
+
+                                        } while (!validSave);
+                                    }
+                                    // Add new save file or overwrite if already exists
+                                    else {
+                                        do {
+                                            // Get save file name from user
+                                            System.out.printf("Enter a name for the save file (%s to cancel): ",
+                                                    QUIT_VAL);
+                                            choiceSave = sc.nextLine().trim();
+
+                                            // User chose to quit; exit                                                                                                                                                                                             loop
+                                            if (choiceSave.equals(QUIT_VAL)) {
+                                                validSave = true;
+                                            }
+                                            // Process new save file name
+                                            else {
+                                                // FIXME: Entering a numerical index will count as already existing
+                                                saveIndex = findSaveIndex(choiceSave, saveNames);
+                                                // Save file already exists; ask to overwrite
+                                                if (saveIndex != -1) {
+                                                    // Get confirmation for overwriting save file
+                                                    System.out.printf(
+                                                            "\"%s\" already exists. Would you like to overwrite it (y/n)? ",
+                                                            choiceSave);
+                                                    overwriteConfirmation = sc.nextLine().toLowerCase();
+
+                                                    switch(overwriteConfirmation) {
+                                                        case "y":
+                                                        case "yes":
+                                                            try {
+                                                                Saves.writeSave(choiceSave, board, p1Score, p1Tiles, p2Score,
+                                                                        p2Tiles, isHard);
+                                                                System.out.println("Save successfully overwritten.");
+                                                            }
+                                                            // File overwrite was unsuccessful
+                                                            catch (IOException e) {
+                                                                System.out.println(e + " Problem writing file.");
+                                                            }
+                                                            System.out.println("Returning to main menu...");
+                                                            System.out.println("<Press [Enter] to continue>");
+                                                            sc.nextLine();
+
+                                                            // Exit loop when done and return to main menu
+                                                            validSave = true;
+                                                            tileSelect = true; // Break out of tile selection
+                                                            running = false; // Break out of game loop
+                                                            validQuit = true; // Break out of quit loop
+                                                            break;
+                                                        case "n":
+                                                        case "no":
+                                                            break;
+                                                        // Invalid selection
+                                                        default:
+                                                            System.out.println();
+                                                            System.out.printf(
+                                                                    "ERROR: File name must be less than %d characters long.",
+                                                                    SAVE_NAME_SIZE);
+                                                            System.out.print("<Press [Enter] to continue>");
+                                                            sc.nextLine();
+                                                            break;
+                                                    }
+                                                }
+
+                                                // Save name is too long or too short
+                                                else if (choiceSave.length() > SAVE_NAME_SIZE || choiceSave.length() == 0) {
+                                                    System.out.println();
+                                                    System.out.printf(
+                                                            "ERROR: File name must be less than %d characters long and contain at least 1 non-whitespace character.%n%n",
+                                                            SAVE_NAME_SIZE);
+                                                    System.out.print("<Press [Enter] to continue>");
+                                                    sc.nextLine();
+                                                }
+
+                                                // Create new save file
+                                                else {
+                                                    try {
+                                                        Saves.writeSave(choiceSave, board, p1Score, p1Tiles, p2Score,
+                                                                p2Tiles, isHard);
+                                                        System.out.println("Save successfully created.");
+                                                        // Exit loop when done and return to main menu
+                                                        validSave = true;
+                                                        tileSelect = true; // Break out of tile selection
+                                                        running = false; // Break out of game loop
+                                                        validQuit = true; // Break out of quit loop
+                                                    }
+                                                    // File overwrite was unsuccessful
+                                                    catch (IOException e) {
+                                                        System.out.println(e + " Problem writing file.");
+                                                        }
+
+                                                    System.out.println("Returning to main menu...");
+                                                    System.out.println("<Press [Enter] to continue>");
+                                                    sc.nextLine();
+                                                }
+                                            }
+
+                                        } while (!validSave);
+                                    }
+
+                                    // Reset looping condition
+                                    validSave = false;
+
+                                    break;
+
+                                // Quit the game without saving
+                                case "2":
+                                case "[2]":
+                                case "quit":
+                                    // Get quit confirmation
+                                    System.out.print(
+                                            "Are you sure you want to quit? All progress will be lost (y/n): ");
+                                    quitConfirmation = sc.nextLine().toLowerCase();
+
+                                    switch (quitConfirmation) {
+                                        // Exit game loop
+                                        case "y":
+                                        case "yes":
+                                            System.out.println("Returning to main menu...");
+
+                                            running = false; // Game loop
+                                            validQuit = true; // Quit option loop
+                                            tileSelect = true; // Tile selection loop
+                                            break;
+                                        // Don't exit game loop
+                                        case "n":
+                                        case "no":
+                                            break;
+                                        // User made invalid choice
+                                        default:
+                                            System.out.println();
+                                            System.out.println("ERROR: Invalid selection.");
+                                            System.out.print("<Press [Enter] to continue>");
+                                            sc.nextLine();
+                                            break;
+                                    }
+
+                                    break;
+
+                                // Resume the game
+                                case QUIT_VAL:
+                                case "[0]":
+                                case "resume":
+                                    // Break out of input loop
+                                    // Goes back to game loop
+                                    validQuit = true;
+                                    break;
+
+                                // User made invalid choice
+                                default:
+                                    System.out.println();
+                                    System.out.println("ERROR: Invalid selection.");
+                                    System.out.print("<Press [Enter] to continue>");
+                                    sc.nextLine();
+                                    break;
+                            }
+                        } while (!validQuit);
+
+                        // Reset looping condition
+                        validQuit = false;
+                    }
+                    // Valid tile was selected
+                    else if (p1Tiles.get(tileName) != null) {
+                        selectedTile = p1Tiles.get(tileName);
+                        // Tile has already been used
+                        if (selectedTile.getUsed()) {
+                            System.out.printf("ERROR: Tile %s has already been placed%n", tileName);
+                        }
+                        // TODO: Place tile somewhere
+                        else {
+                            tileSelect = true;
+                        }
+                    }
+                    // Invalid tile name
+                    else {
+                        System.out.println("ERROR: Please select a valid tile name.");
+                        System.out.println("[Press <Enter> to continue]");
+                        sc.nextLine();
+                    }
+                } while (!tileSelect);
+            }
+            // Player 1 has no valid moves; skip turn
+            else {
+                System.out.println("Player 1 cannot move. Skipping turn...");
+                System.out.println("<Press [Enter] to continue>");
+                sc.nextLine();
+            }
+
+            // TODO: CPU move if game has not been quit
+            if (running) {
+                if (p2CanMove) {
+                    // cpuMove(p2Tiles, isHard);
+                    // p2CanMove = checkAvailableMoves(board, p2Tiles);
+                } else {
+                    System.out.println("Player 2 cannot move. Skipping turn...");
+                    System.out.println("<Press [Enter] to continue>");
+                    sc.nextLine();
+                }
+            }
+
+            // Game is over when neither player can move
+            if (!p1CanMove && !p2CanMove) {
+                System.out.println();
+                System.out.println("**GAME OVER**");
+                // Scores are equal; tie game
+                if (p1Score == p2Score) {
+                    System.out.printf("Tie Game: Both players scored %d points.%n", p1Score);
+                }
+                // Either player 1 or player 2 wins
+                else {
+                    System.out.printf("Player %d wins!", (p1Score > p2Score ? 1 : 2));
+                }
+
+                // Return to main menu
+                System.out.println();
+                System.out.println("Returning to main menu...");
+                System.out.println("<Press [Enter] to continue>");
+                sc.nextLine();
+            }
         }
     }
 
@@ -322,10 +636,10 @@ public class BlokusDuo {
         ArrayList<String> saveNames;
 
         // Game variables
-        int p1Score = 0;
-        int p2Score = 0;
-        Map<String, Tile> p1Tiles = Tile.newTileSet();
-        Map<String, Tile> p2Tiles = Tile.newTileSet();
+        int p1Score;
+        int p2Score;
+        Map<String, Tile> p1Tiles;
+        Map<String, Tile> p2Tiles;
         char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
         boolean isHard;
 
@@ -360,6 +674,16 @@ public class BlokusDuo {
                             case "1":
                             case "[1]":
                             case "easy":
+                                // Reset game variables
+                                board = new char[BOARD_SIZE][BOARD_SIZE];
+                                board[START_1][START_1] = AVAIL;
+                                board[START_2][START_2] = AVAIL;
+                                p1Score = 0;
+                                p2Score = 0;
+                                p1Tiles = Tile.newTileSet();
+                                p2Tiles = Tile.newTileSet();
+
+                                // Start new game on easy mode
                                 isHard = false;
                                 runGame(board, p1Score, p1Tiles, p2Score, p2Tiles, isHard);
                                 validDifficulty = true;
@@ -368,6 +692,16 @@ public class BlokusDuo {
                             case "2":
                             case "[2]":
                             case "hard":
+                                // Reset game variables
+                                board = new char[BOARD_SIZE][BOARD_SIZE];
+                                board[START_1][START_1] = AVAIL;
+                                board[START_2][START_2] = AVAIL;
+                                p1Score = 0;
+                                p2Score = 0;
+                                p1Tiles = Tile.newTileSet();
+                                p2Tiles = Tile.newTileSet();
+
+                                // Start new game on hard mode
                                 isHard = true;
                                 runGame(board, p1Score, p1Tiles, p2Score, p2Tiles, isHard);
                                 validDifficulty = true;
@@ -408,7 +742,7 @@ public class BlokusDuo {
                         // Get save file name from user
                         printMenu(2);
                         System.out.print("Enter a save file to load: ");
-                        choiceSave = sc.nextLine();
+                        choiceSave = sc.nextLine().trim();
 
                         // User chose to quit
                         if (choiceSave.equals(QUIT_VAL) || choiceSave.equals("[" + QUIT_VAL + "]")
@@ -418,6 +752,7 @@ public class BlokusDuo {
                             saveIndex = findSaveIndex(choiceSave, saveNames);
                             // Found save file
                             if (saveIndex != -1) {
+                                choiceSave = saveNames.get(saveIndex);
                                 // Read save information file and start game
                                 try {
                                     board = Saves.getSaveBoard(choiceSave);
