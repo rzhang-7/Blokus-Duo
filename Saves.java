@@ -29,27 +29,31 @@ public class Saves {
     public static void writeSave(String saveName, char[][] board, int p1Score, Map<String, Tile> p1Tiles, int p2Score,
             Map<String, Tile> p2Tiles, boolean isHard) throws IOException {
         // Declare variables and constants
-        final String FILE_NAME = "./saves" + saveName + ".txt";
+        final String FILE_NAME = "./saves/" + saveName + ".txt";
 
         // Write file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, false))) {
             // Write board
             for (int i = 0; i < BlokusDuo.BOARD_SIZE; i++) {
                 for (int j = 0; j < BlokusDuo.BOARD_SIZE; j++) {
-                    bw.write(board[i][j]);
+                    bw.write((board[i][j] == (char)0 ? '+' : board[i][j]));
                 }
                 bw.newLine();
             }
             bw.write(SAVE_DELIMITER);
+            bw.newLine();
 
             // Write score of player 1
             bw.write("Player 1 score");
             bw.newLine();
             bw.write(String.valueOf(p1Score));
+            bw.newLine();
             bw.write(SAVE_DELIMITER);
+            bw.newLine();
 
             // Write used tiles of player 1
             bw.write("Player 1 used");
+            bw.newLine();
             // Loop through all tiles
             for (Map.Entry<String, Tile> entry : p1Tiles.entrySet()) {
                 // If tile is used, write its name to file
@@ -59,15 +63,19 @@ public class Saves {
                 }
             }
             bw.write(SAVE_DELIMITER);
+            bw.newLine();
 
             // Write score of player 2
             bw.write("Player 2 score");
             bw.newLine();
             bw.write(String.valueOf(p2Score));
+            bw.newLine();
             bw.write(SAVE_DELIMITER);
+            bw.newLine();
 
             // Write used tiles of player 2
             bw.write("Player 2 used");
+            bw.newLine();
             // Loop through all tiles
             for (Map.Entry<String, Tile> entry : p2Tiles.entrySet()) {
                 // If tile is used, write its name to file
@@ -77,24 +85,30 @@ public class Saves {
                 }
             }
             bw.write(SAVE_DELIMITER);
+            bw.newLine();
 
             // Write difficulty
+            bw.write("Difficulty");
+            bw.newLine();
             bw.write((isHard ? "Hard" : "Easy"));
+            bw.newLine();
             bw.write(SAVE_DELIMITER);
         }
     }
 
     public static char[][] getSaveBoard(String saveName) throws IOException {
         // Declare variables and constants
-        final String FILE_NAME = "./saves" + saveName + ".txt";
+        final String FILE_NAME = "./saves/" + saveName + ".txt";
         char[][] board = new char[BlokusDuo.BOARD_SIZE][BlokusDuo.BOARD_SIZE];
+        String line;
 
         // Read file
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
             // Get board characters
             for (int i = 0; i < BlokusDuo.BOARD_SIZE; i++) {
+                line = br.readLine();
                 for (int j = 0; j < BlokusDuo.BOARD_SIZE; j++) {
-                    board[i][j] = (char) br.read();
+                    board[i][j] = (line.charAt(j) == '+' ? (char)0 : line.charAt(j));
                 }
             }
         }
@@ -104,7 +118,7 @@ public class Saves {
 
     public static int getPlayerScore(String saveName, int playerNum) throws IOException {
         // Declare variables and constants
-        final String FILE_NAME = "./saves" + saveName + ".txt";
+        final String FILE_NAME = "./saves/" + saveName + ".txt";
         boolean reading = true;
         int score = 0;
         String line;
@@ -128,7 +142,7 @@ public class Saves {
 
     public static Map<String, Tile> getPlayerTiles(String saveName, int playerNum) throws IOException {
         // Declare variables and constants
-        final String FILE_NAME = "./saves" + saveName + ".txt";
+        final String FILE_NAME = "./saves/" + saveName + ".txt";
         Map<String, Tile> tileSet = Tile.newTileSet();
         String line;
         boolean reading = true;
@@ -142,7 +156,11 @@ public class Saves {
                 if (line.equals(String.format("Player %d used", playerNum))) {
                     // Mark tiles as used
                     while (!line.equals(SAVE_DELIMITER)) {
-                        tileSet.get(br.readLine()).setUsed(true);
+                        line = br.readLine();
+
+                        // Get tile name from line if line is not a delimiter
+                        if(!line.equals(SAVE_DELIMITER))
+                            tileSet.get(line).setUsed(true);
                     }
                     reading = false;
                 }
@@ -154,7 +172,7 @@ public class Saves {
 
     public static boolean getDifficulty(String saveName) throws IOException {
         // Declare variables and constants
-        final String FILE_NAME = "./saves" + saveName + ".txt";
+        final String FILE_NAME = "./saves/" + saveName + ".txt";
         String line;
         boolean reading = true, isHard = false;
 
@@ -183,7 +201,7 @@ public class Saves {
     public static ArrayList<String> getSaveNames() {
         // Declare variables
         ArrayList<String> saveNames = new ArrayList<>();
-        File saveFolder = new File("./saves"); // saves folder directory
+        File saveFolder = new File("./saves/"); // saves folder directory
         File[] saveFiles = saveFolder.listFiles(); // files in saves folder directory
 
         // Get all save names names
