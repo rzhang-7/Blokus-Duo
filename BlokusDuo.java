@@ -22,11 +22,11 @@ public class BlokusDuo {
     public static final char P2 = 'O';
     public static final char INVALID = 'X';
     public static final char AVAIL = '*';
-    public static final char EMPTY = (char) 0;
+    public static final char EMPTY = ' ';
 
     /*
      * Method name: printError
-     * Paramenters: String message - The message to print out when the error is
+     * Parameters: String message - The message to print out when the error is
      * caused.
      * Description: Shortcut method for printing an error message and allowing user
      * to press enter to continue.
@@ -137,7 +137,7 @@ public class BlokusDuo {
             System.out.printf("%2d ", i + 1);
 
             for (int j = 0; j < BOARD_SIZE; j++) {
-                System.out.printf("[%c]", (board[i][j] == EMPTY ? ' ' : board[i][j]));
+                System.out.printf("[%c]", board[i][j]);
             }
             System.out.println();
         }
@@ -186,7 +186,7 @@ public class BlokusDuo {
                 }
                 // Print the board otherwise
                 else {
-                    System.out.printf("[%c]", (board[i][j] == EMPTY ? ' ' : board[i][j]));
+                    System.out.printf("[%c]", board[i][j]);
                 }
             }
             System.out.println();
@@ -243,7 +243,7 @@ public class BlokusDuo {
                             if (tileSquares[i - (maxRow - t.getRows())][j]) {
                                 // TODO: Use invalid character if tile cannot be placed
                                 // Fill with player colour if unused
-                                System.out.printf("[%c]", (t.getUsed() ? ' ' : playerChar));
+                                System.out.printf("[%c]", (t.getUsed() ? EMPTY : playerChar));
                             } else {
                                 System.out.print("   ");
                             }
@@ -361,7 +361,7 @@ public class BlokusDuo {
      * Parameters: String tileName - The name of the selected tile
      * Tile selectedTile - The Tile object of the selected tile
      * char[][] board - The game board
-     * Description: 
+     * Description: Input loop to place a tile onto the board during a player's turn.
      */
     public static void placeTile(String tileName, Tile selectedTile, char[][] board) {
         // Declare variables
@@ -912,13 +912,33 @@ public class BlokusDuo {
     }
 
     /*
+     * Method name: initBoard
+     * Parameters: char[][] board - The game board to initialize
+     * Description: Initializes the game board for a new game.
+     */
+    public static void initBoard(char[][] board) {
+        // Starting positions
+        final int START_1 = 4, START_2 = 9;
+
+        // Initialize board size
+        board = new char[BOARD_SIZE][BOARD_SIZE];
+
+        // Fill board with empty characters
+        for(char[] row : board) {
+            Arrays.fill(row, EMPTY);
+        }
+
+        // Set starting positions
+        board[START_1][START_1] = AVAIL;
+        board[START_2][START_2] = AVAIL;
+    }
+
+    /*
      * Implement game loop
      * Print main menu
      * Get options
      */
     public static void main(String[] args) {
-        final int START_1 = 4, START_2 = 9;
-
         // Menu and selection variables
         String choiceMenu, choiceDifficulty, choiceSave;
         boolean running = true, validDifficulty = false, validSave = false;
@@ -932,10 +952,6 @@ public class BlokusDuo {
         Map<String, Tile> p2Tiles;
         char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
         boolean isHard;
-
-        // Set starting positions for board; will be overwritten if loading save
-        board[START_1][START_1] = AVAIL;
-        board[START_2][START_2] = AVAIL;
 
         Scanner sc = IO.newScanner();
 
@@ -965,9 +981,7 @@ public class BlokusDuo {
                             case "[1]":
                             case "easy":
                                 // Reset game variables
-                                board = new char[BOARD_SIZE][BOARD_SIZE];
-                                board[START_1][START_1] = AVAIL;
-                                board[START_2][START_2] = AVAIL;
+                                initBoard(board); // Initialize board
                                 p1Score = 0;
                                 p2Score = 0;
                                 p1Tiles = Tile.newTileSet();
@@ -983,9 +997,7 @@ public class BlokusDuo {
                             case "[2]":
                             case "hard":
                                 // Reset game variables
-                                board = new char[BOARD_SIZE][BOARD_SIZE];
-                                board[START_1][START_1] = AVAIL;
-                                board[START_2][START_2] = AVAIL;
+                                initBoard(board); // Initialize board
                                 p1Score = 0;
                                 p2Score = 0;
                                 p1Tiles = Tile.newTileSet();
