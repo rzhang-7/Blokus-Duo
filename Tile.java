@@ -143,12 +143,20 @@ public class Tile {
      * Description: Rotates the tile clockwise.
      */
     public void rotateRight() {
-        // Create new squares with reversed dimensions
-        boolean[][] newSquares = new boolean[getCols()][getRows()];
+        // Declare variables
+        int newRows = getCols(), newCols = getRows(); // Reverse rows and columns
 
-        for (int i = 0; i < getCols(); i++) {
-            for (int j = 0; j < getRows(); j++) {
-                newSquares[i][j] = getSquares()[getRows() - j - 1][i];
+        // Create new squares with reversed dimensions
+        boolean[][] newSquares = new boolean[newRows][newCols];
+
+        // Update rows and columns
+        setCols(newCols);
+        setRows(newRows);
+
+        // Rotate squares
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
+                newSquares[i][j] = getSquares()[getCols() - j - 1][i];
             }
         }
 
@@ -161,11 +169,19 @@ public class Tile {
      * Description: Rotates the tile counterclockwise.
      */
     public void rotateLeft() {
-        // Create new squares with reversed dimensions
+        // Declare variables
+        int newRows = getCols(), newCols = getRows(); // Reverse rows and columns
 
-        boolean[][] newSquares = new boolean[getCols()][getRows()];
-        for (int i = 0; i < getCols(); i++) {
-            for (int j = 0; j < getRows(); j++) {
+        // Create new squares with reversed dimensions
+        boolean[][] newSquares = new boolean[newRows][newCols];
+
+        // Update rows and columns
+        setCols(newCols);
+        setRows(newRows);
+
+        // Rotate squares
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
                 newSquares[i][j] = getSquares()[j][getRows() - i - 1];
             }
         }
