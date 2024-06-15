@@ -215,35 +215,37 @@ public class BlokusDuo {
     public static void printTiles(Map<String, Tile> tiles, char playerChar) {
         final String[][] TILE_ROWS = { { "I1", "I2", "I3", "V3", "O" }, { "T4", "L4", "Z4", "I4" },
                 { "F", "X", "P", "W" }, { "Z5", "U", "T5", "V5" }, { "N", "Y", "L5" }, { "I5" } };
-        Tile t;
+        Tile refTile, playerTile;
         int maxRow = 0;
         boolean[][] tileSquares;
+Map<String, Tile> refTiles = Tile.newTileSet();
 
         // Print tiles on a line
         for (String[] line : TILE_ROWS) {
 
             // Get max number of rows needed
             for (String tileName : line) {
-                t = tiles.get(tileName);
-                maxRow = Math.max(maxRow, t.getRows());
+                refTile = refTiles.get(tileName);
+                maxRow = Math.max(maxRow, refTile.getRows());
             }
 
             // Print all rows
             for (int i = 0; i < maxRow; i++) {
                 for (String tileName : line) {
                     // Get tile
-                    t = tiles.get(tileName);
-                    tileSquares = t.getPrintSquares();
+                    refTile = refTiles.get(tileName);
+                    playerTile = tiles.get(tileName);
+                    tileSquares = refTile.getSquares();
 
                     // Print tile segment
-                    for (int j = 0; j < t.getCols(); j++) {
+                    for (int j = 0; j < refTile.getCols(); j++) {
                         // Only print tiles aligned to the bottom
-                        if (i >= maxRow - t.getRows()) {
+                        if (i >= maxRow - refTile.getRows()) {
                             // Check if empty tile
-                            if (tileSquares[i - (maxRow - t.getRows())][j]) {
+                            if (tileSquares[i - (maxRow - refTile.getRows())][j]) {
                                 // TODO: Use invalid character if tile cannot be placed
                                 // Fill with player colour if unused
-                                System.out.printf("[%c]", (t.getUsed() ? EMPTY : playerChar));
+                                System.out.printf("[%c]", (playerTile.getUsed() ? EMPTY : playerChar));
                             } else {
                                 System.out.print("   ");
                             }
@@ -265,12 +267,12 @@ public class BlokusDuo {
             // Print tile names, centered to its corresponding tile piece
             for (String tileName : line) {
                 // Get tile
-                t = tiles.get(tileName);
+                refTile = refTiles.get(tileName);
 
                 // Even number of columns; name goes under between two center squares
-                if (t.getCols() % 2 == 0) {
+                if (refTile.getCols() % 2 == 0) {
                     // Print left half
-                    for (int i = 0; i < t.getCols() / 2 - 1; i++) {
+                    for (int i = 0; i < refTile.getCols() / 2 - 1; i++) {
                         System.out.print("   ");
                     }
 
@@ -278,14 +280,14 @@ public class BlokusDuo {
                     System.out.printf("  %-2s  ", tileName);
 
                     // Print right half
-                    for (int i = 0; i < t.getCols() / 2 - 1; i++) {
+                    for (int i = 0; i < refTile.getCols() / 2 - 1; i++) {
                         System.out.print("   ");
                     }
                 }
                 // Odd number of columns; name goes under the center squares
                 else {
                     // Print left half
-                    for (int i = 0; i < t.getCols() / 2; i++) {
+                    for (int i = 0; i < refTile.getCols() / 2; i++) {
                         System.out.print("   ");
                     }
 
@@ -293,7 +295,7 @@ public class BlokusDuo {
                     System.out.printf("%2s ", tileName);
 
                     // Print right half
-                    for (int i = 0; i < t.getCols() / 2; i++) {
+                    for (int i = 0; i < refTile.getCols() / 2; i++) {
                         System.out.print("   ");
                     }
                 }
