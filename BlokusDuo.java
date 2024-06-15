@@ -451,7 +451,7 @@ public class BlokusDuo {
                         printError("Tile is out of bounds.");
                     }
                     else {
-                        c++;
+                        r++;
                     }
                     break;
 
@@ -674,6 +674,7 @@ public class BlokusDuo {
 
                                             // Exit loop when done and return to main menu
                                             validSave = true;
+                                            menuSelect = true; // Break out of menu selection
                                             running = false; // Break out of game loop
                                         }
 
@@ -684,6 +685,9 @@ public class BlokusDuo {
                                     }
 
                                 } while (!validSave);
+
+                                // Reset looping condition
+                                validSave = false;
                             }
                             // Add new save file or overwrite if already exists
                             else {
@@ -758,11 +762,11 @@ public class BlokusDuo {
                                             try {
                                                 Saves.writeSave(choiceSave, board, p1Score, p1Tiles, p2Score,
                                                         p2Tiles, isHard);
-                                                System.out.printf("%nSaved saved game state in %s.%n", choiceSave);
+                                                System.out.printf("%nSaved game state in \"%s\".%n", choiceSave);
 
                                                 // Exit loop when done and return to main menu
                                                 validSave = true;
-                                                tileSelect = true; // Break out of tile selection
+                                                menuSelect = true; // Break out of menu selection
                                                 running = false; // Break out of game loop
                                             }
                                             // File overwrite was unsuccessful
@@ -919,9 +923,6 @@ public class BlokusDuo {
     public static void initBoard(char[][] board) {
         // Starting positions
         final int START_1 = 4, START_2 = 9;
-
-        // Initialize board size
-        board = new char[BOARD_SIZE][BOARD_SIZE];
 
         // Fill board with empty characters
         for(char[] row : board) {
