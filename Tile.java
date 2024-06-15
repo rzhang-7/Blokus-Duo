@@ -183,12 +183,12 @@ public class Tile {
         boolean[][] flippedSquares = getSquares();
 
         // Loop throw tile's columns
-        for (int i = 0; i < getRows(); i++) {
-            for (int j = 0; j < getCols() / 2; j++) {
+        for (int i = 0; i < getRows() / 2; i++) {
+            for (int j = 0; j < getCols(); j++) {
                 // Swap top rows with bottom rows
-                flippedSquares[j][i] ^= flippedSquares[getCols() - j - 1][i];
-                flippedSquares[getCols() - j - 1][i] ^= flippedSquares[j][i];
-                flippedSquares[j][i] ^= flippedSquares[getCols() - j - 1][i];
+                flippedSquares[i][j] ^= flippedSquares[getRows() - i - 1][j];
+                flippedSquares[getRows() - i - 1][j] ^= flippedSquares[i][j];
+                flippedSquares[i][j] ^= flippedSquares[getRows() - i - 1][j];
             }
         }
     }
