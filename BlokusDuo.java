@@ -20,7 +20,7 @@ public class BlokusDuo {
     // Display board characters
     public static final char P1 = '@';
     public static final char P2 = 'O';
-    public static final char INVALID = 'X';
+    public static final char INVALID = 'x';
     public static final char AVAIL = '*';
     public static final char EMPTY = ' ';
 
@@ -179,7 +179,7 @@ public class BlokusDuo {
                     // Use '+' to indicate that the tile can be placed
                     if (valid)
                         System.out.printf("[%c]", selectedTile.getSquares()[i - r][j - c] ? PLACEABLE : board[i][j]);
-                    // Use 'X' to indicate that the tile cannot be placed
+                    // Use 'x' to indicate that the tile cannot be placed
                     else
                         System.out.printf("[%c]", selectedTile.getSquares()[i - r][j - c] ? INVALID : board[i][j]);
 
