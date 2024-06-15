@@ -36,7 +36,7 @@ public class Saves {
             // Write board
             for (int i = 0; i < BlokusDuo.BOARD_SIZE; i++) {
                 for (int j = 0; j < BlokusDuo.BOARD_SIZE; j++) {
-                    bw.write((board[i][j] == (char)0 ? '+' : board[i][j]));
+                    bw.write((board[i][j] == BlokusDuo.EMPTY ? '+' : board[i][j]));
                 }
                 bw.newLine();
             }
@@ -108,7 +108,7 @@ public class Saves {
             for (int i = 0; i < BlokusDuo.BOARD_SIZE; i++) {
                 line = br.readLine();
                 for (int j = 0; j < BlokusDuo.BOARD_SIZE; j++) {
-                    board[i][j] = (line.charAt(j) == '+' ? (char)0 : line.charAt(j));
+                    board[i][j] = (line.charAt(j) == '+' ? BlokusDuo.EMPTY : line.charAt(j));
                 }
             }
         }
