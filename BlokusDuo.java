@@ -309,6 +309,16 @@ Map<String, Tile> refTiles = Tile.newTileSet();
     }
 
     /*
+     * Method name: inRange
+     * Parameters: int val - The number to check
+     * Return type: boolean - Whether or not the given index fits within the board
+     * Description: Checks if the given index fits within the board's indexes.
+     */
+    public static boolean inRange(int val) {
+        return 0 <= val && val < BOARD_SIZE;
+    }
+
+    /*
      * Method name: checkValid
      * Parameters: char[][] board - The game board
      * int r - The row of the tile
