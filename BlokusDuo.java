@@ -22,22 +22,14 @@ public class BlokusDuo {
     public static final char P2 = 'O';
     public static final char INVALID = 'X';
     public static final char AVAIL = '*';
-
-    // Tile controls
-    private static final char UP = 'W';
-    private static final char DOWN = 'S';
-    private static final char LEFT = 'A';
-    private static final char RIGHT = 'D';
-    private static final char ROTATE_RIGHT = 'R';
-    private static final char ROTATE_LEFT = 'E';
-    private static final char FLIP_VERT = 'V';
-    private static final char FLIP_HORZ = 'F';
-
+    public static final char EMPTY = (char) 0;
 
     /*
      * Method name: printError
-     * Paramenters: String message - The message to print out when the error is caused.
-     * Description: Shortcut method for printing an error message and allowing user to press enter to continue.
+     * Paramenters: String message - The message to print out when the error is
+     * caused.
+     * Description: Shortcut method for printing an error message and allowing user
+     * to press enter to continue.
      */
     public static void printError(String message) {
         // Create new scanner
@@ -45,8 +37,8 @@ public class BlokusDuo {
 
         // Print error message
         System.out.println();
-        System.out.printf("ERROR: %s", message);
-        System.out.println("<Press [Enter] to continue.>");
+        System.out.printf("ERROR: %s%n", message);
+        System.out.println("<Press [Enter] to continue>");
         sc.nextLine();
     }
 
@@ -145,7 +137,57 @@ public class BlokusDuo {
             System.out.printf("%2d ", i + 1);
 
             for (int j = 0; j < BOARD_SIZE; j++) {
-                System.out.printf("[%c]", (board[i][j] == (char) 0 ? ' ' : board[i][j]));
+                System.out.printf("[%c]", (board[i][j] == EMPTY ? ' ' : board[i][j]));
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+    }
+
+    /*
+     * Method name: printBoard
+     * Parameters: char[][] board - The game board
+     * boolean valid - Whether or not the tile can be placed
+     * int r - The row of the tile
+     * int c - The column the tile
+     * Tile selectedTile - The tile to place
+     * Description: Prints the current status of the board when a tile is being
+     * selected.
+     */
+
+    public static void printBoard(char[][] board, boolean valid, int r, int c, Tile selectedTile) {
+        // Declare constants
+        final char PLACEABLE = '+';
+
+        System.out.println();
+        // Print column coordinates
+        System.out.print("   ");
+        for (int i = 1; i <= BOARD_SIZE; i++) {
+            System.out.printf(" %-2d", i);
+        }
+        System.out.println();
+
+        // Print board
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            // Print row coordinates
+            System.out.printf("%2d ", i + 1);
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                // Current coordinates are in range of tile coordinates
+                // Overlay tile piece over the board
+                if (i >= r && i < r + selectedTile.getRows() && j >= c && j < c + selectedTile.getCols()) {
+                    // Use '+' to indicate that the tile can be placed
+                    if (valid)
+                        System.out.printf("[%c]", selectedTile.getSquares()[i - r][j - c] ? PLACEABLE : board[i][j]);
+                    // Use 'X' to indicate that the tile cannot be placed
+                    else
+                        System.out.printf("[%c]", selectedTile.getSquares()[i - r][j - c] ? INVALID : board[i][j]);
+
+                }
+                // Print the board otherwise
+                else {
+                    System.out.printf("[%c]", (board[i][j] == EMPTY ? ' ' : board[i][j]));
+                }
             }
             System.out.println();
         }
@@ -265,58 +307,237 @@ public class BlokusDuo {
     }
 
     /*
+     * Method name: checkValid
+     * Parameters: char[][] board - The game board
+     * int r - The row of the tile
+     * int c - The column of the tile
+     * Tile selectedTile - The tile to place
+     * char player - The player to check
+     * Return type: boolean - Whether or not the tile can be placed at the specified
+     * row and column
+     * Description: Checks whether or not a tile can be placed at a specified location.
+     */
+    public static boolean checkValid(char[][] board, int r, int c, Tile selectedTile, char player) {
+        // Declare constants and variables
+        final int[][] DIR = {{0,1},{-1,0},{0,-1},{1,0}};
+        int ni, nj;
+        boolean valid = true, touchesAvail = false;
+        // Tile is out of bounds
+        if (r + selectedTile.getRows() >= BOARD_SIZE || c + selectedTile.getCols() >= BOARD_SIZE) {
+            valid = false;
+        } else {
+            // Overlapping other tiles
+            for (int i = r; i < r + selectedTile.getRows() && valid; i++) {
+                for (int j = c; j < c + selectedTile.getCols() && valid; j++) {
+                    if (selectedTile.getSquares()[i - r][j - c]) {
+                        // Occupied area must be empty or an available character ('*')
+                        valid = board[i][j] == EMPTY || board[i][j] == AVAIL;
+
+                        // Check if tile touches at least one available character
+                        touchesAvail |= board[i][j] == AVAIL;
+
+                        // Loop up/down/left/right directions
+                        for(int k = 0; k<DIR.length && valid; k++) {
+                            // Get new i and j values
+                            ni = DIR[k][0];
+                            nj = DIR[k][1];
+
+                            // Check if new coordinates are in bounds
+                            if(ni >= 0 && ni < BOARD_SIZE && nj >= 0 && nj < BOARD_SIZE) {
+                                // Adjacent tiles should not match the player's
+                                valid = board[ni][nj] != player;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return valid && touchesAvail;
+    }
+
+    /*
      * Method name: placeTile
      * Parameters: String tileName - The name of the selected tile
      * Tile selectedTile - The Tile object of the selected tile
      * char[][] board - The game board
-     * 
+     * Description: 
      */
     public static void placeTile(String tileName, Tile selectedTile, char[][] board) {
         // Declare variables
-        int x, y;
-        String coords;
+        int r = 0, c = 0;
+        String coords, tileTransformation;
         String[] coordPair;
-        boolean validCoord = false;
+        boolean validCoord = false, placed = false, canPlace;
+
         // Create new scanner
         Scanner sc = IO.newScanner();
-        // System.out.printf("Tile %s is at (%d, %d)%n", tileName, x, y);
+        // System.out.printf("Tile %s is at (%d, %d)%n", tileName, r, c);
 
         // Get coordinates
         do {
-            System.out.print("Enter the coordinates (x, y): ");
+            System.out.printf("Enter the coordinates ((r, c), \"%s\" to quit): ", QUIT_VAL);
             coords = sc.nextLine();
 
             // Extract numbers from input string
-            coordPair = coords.split("-?\\d+");
+            coordPair = coords.split("[^(-?\\d+)]");
+
+            // Skip tile placement
+            if (coords.equals(QUIT_VAL)) {
+                validCoord = true; // Break out of coordinate loop
+                placed = true; // Skip placing loop
+            }
 
             // User entered more or less numbers than needed
-            if(coordPair.length != 2) {
+            else if (coordPair.length != 2) {
                 printError("Please enter two separated integers.");
             }
-            // Extract x and y values
+            // Extract r and c values
             else {
-                x = Integer.parseInt(coordPair[0]);
-                y = Integer.parseInt(coordPair[1]);
+                r = Integer.parseInt(coordPair[0].trim());
+                c = Integer.parseInt(coordPair[1].trim());
 
-                // Coordinates out of points
-                if(x <= 0 || x > BOARD_SIZE || y <= 0 || y > BOARD_SIZE) {
+                // Coordinates out of range
+                if (r <= 0 || r > BOARD_SIZE || c <= 0 || c > BOARD_SIZE) {
                     printError(String.format("Coordinates must be between 1 and %d inclusive.", BOARD_SIZE));
                 }
-                // Valid coordinates were found
+                // Valid coordinates were found; convert to 0-index
                 else {
+                    r--;
+                    c--;
                     validCoord = true;
                 }
             }
 
-        } while(!validCoord);
+        } while (!validCoord);
 
-        // TODO: Create display board
+        // Allow user to shift, rotate, or flip tile until valid or they choose another tile
+        while(!placed) {
+            // Update and display board
+            canPlace = checkValid(board, r, c, selectedTile, P1);
+            printBoard(board, canPlace, r, c, selectedTile);
 
-        // TODO: Allow user to shift, rotate, or flip tile until valid or they choose another tile
+            // Display selection menu
+            System.out.println("What would you like to do?");
+            System.out.println("  [W/S/A/D] Shift tile up/down/left/right");
+            System.out.println("  [E/R] Rotate left/right");
+            System.out.println("  [V/F] Flip vertically/horizontally");
+            if(canPlace)
+                System.out.println("  [C] Place tile");
+            System.out.printf("  [%s] Cancel placement%n", QUIT_VAL);
 
-        // TODO: Write tile to board
+            // Get input for transformation
+            System.out.print("Enter your selection: ");
+            tileTransformation = sc.nextLine().toUpperCase();
 
-        // TODO: Update available tiles
+            switch(tileTransformation) {
+                // Shift up by 1
+                case "W":
+                case "[W]":
+                    // Check if tile moves out of bounds
+                    if(r - 1 < 0) {
+                        printError("Tile is out of bounds.");
+                    }
+                    else {
+                        r--;
+                    }
+                    break;
+
+                // Shift down by 1
+                case "S":
+                case "[S]":
+                    // Check if tile moves out of bounds
+                    if(r + 1 >= BOARD_SIZE) {
+                        printError("Tile is out of bounds.");
+                    }
+                    else {
+                        c++;
+                    }
+                    break;
+
+                // Shift left by 1
+                case "A":
+                case "[A]":
+                    // Check if tile moves out of bounds
+                    if(c - 1 < 0) {
+                        printError("Tile is out of bounds.");
+                    }
+                    else {
+                        c--;
+                    }
+                    break;
+
+                // Shift right by 1
+                case "D":
+                case "[D]":
+                    // Check if tile moves out of bounds
+                    if(c + 1 >= BOARD_SIZE) {
+                        printError("Tile is out of bounds.");
+                    }
+                    else {
+                        c++;
+                    }
+                    break;
+
+                // Rotate left by 90 degrees
+                case "E":
+                case "[E]":
+                    selectedTile.rotateLeft();
+                    break;
+
+                // Rotate right by 90 degrees
+                case "R":
+                case "[R]":
+                    selectedTile.rotateRight();
+                    break;
+
+                // Flip vertically
+                case "V":
+                case "[V]":
+                    selectedTile.flipVert();
+                    break;
+
+                // Flip horizontally
+                case "F":
+                case "[F]":
+                    selectedTile.flipHorz();
+                    break;
+
+                // Place tile
+                case "C":
+                case "[C]":
+                    // Can only place if valid
+                    if(canPlace) {
+                        // Place the tile
+                        selectedTile.placeTile(r, c, P1, board);
+                        // Mark tile as used
+                        selectedTile.setUsed(true);
+
+                        // TODO: Update board
+                        // * Write tile to board
+                        // * Mark available tiles
+
+                        // Break out of loop
+                        placed = true;
+                    }
+                    else {
+                        printError("Tile cannot be placed. Try moving/rotating/flipping it, or choose another tile.");
+                    }
+                    break;
+
+                // Quit
+                case QUIT_VAL:
+                case "[0]":
+                case "quit":
+                    placed = true;
+                    break;
+
+                // User made invalid choice
+                default:
+                    printError("Invalid selection");
+                    break;
+            }
+        }
     }
 
     /*
@@ -368,15 +589,16 @@ public class BlokusDuo {
                         // Show tiles and select
                         case "1":
                         case "[1]":
-                            printTiles(p1Tiles, P1); // May be p2 if doing 2-player
-
                             do {
+                                // Display available tiles
+                                printTiles(p1Tiles, P1); // May be p2 if doing 2-player
+
                                 // Get user input for tile
                                 System.out.printf("Select a tile to place (%s to quit): ", QUIT_VAL);
                                 tileName = sc.nextLine().toUpperCase(); // convert to upper for case insensitivity
 
                                 // User chose to quit
-                                if(tileName.equals(QUIT_VAL)) {
+                                if (tileName.equals(QUIT_VAL)) {
                                     tileSelect = true;
                                 }
                                 // Valid tile was selected
@@ -386,22 +608,25 @@ public class BlokusDuo {
                                     if (selectedTile.getUsed()) {
                                         System.out.printf("ERROR: Tile %s has already been placed%n", tileName);
                                     }
-                                    // TODO: Place tile somewhere
+                                    // Place tile somewhere
                                     else {
                                         placeTile(tileName, selectedTile, board);
 
                                         // Exit loop if successfully placed tile
-                                        if(selectedTile.getUsed())
+                                        if (selectedTile.getUsed()) {
+                                            p1Score += selectedTile.getPoints(); // Increment player score
                                             tileSelect = true;
+                                        }
                                     }
                                 }
                                 // Invalid tile name
                                 else {
-                                    System.out.println("ERROR: Please select a valid tile name.");
-                                    System.out.println("[Press <Enter> to continue]");
-                                    sc.nextLine();
+                                    printError("Please select a valid tile name.");
                                 }
-                            } while(!tileSelect);
+                            } while (!tileSelect);
+
+                            // Reset looping condition
+                            tileSelect = false;
 
                             break;
 
@@ -482,7 +707,7 @@ public class BlokusDuo {
                                             printError("Save name cannot be \"quit\".");
                                         }
                                         // Name must contain at least one character
-                                        else if(choiceSave.matches("^[0-9]+$")) {
+                                        else if (choiceSave.matches("^[0-9]+$")) {
                                             printError("Save name must contain alphabetic characters");
                                         }
                                         // Save file already exists; ask to overwrite
@@ -523,7 +748,9 @@ public class BlokusDuo {
 
                                         // Save name is too long or too short
                                         else if (choiceSave.length() > SAVE_NAME_SIZE || choiceSave.length() == 0) {
-                                            printError(String.format("File name must be less than %d characters long and contain at least 1 non-whitespace character.", SAVE_NAME_SIZE));
+                                            printError(String.format(
+                                                    "File name must be less than %d characters long and contain at least 1 non-whitespace character.",
+                                                    SAVE_NAME_SIZE));
                                         }
 
                                         // Create new save file
@@ -780,7 +1007,7 @@ public class BlokusDuo {
 
                             // User made invalid choice
                             default:
-                                pirntError("Invalid selection.");
+                                printError("Invalid selection.");
                                 break;
                         }
                     } while (!validDifficulty);
