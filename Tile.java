@@ -221,13 +221,13 @@ public class Tile {
 
     /*
      * Method name: placeTile()
-     * Parameters: int r - The row of the tile location. Assumed to be valid.
+     * Parameters: char[][] - The game board
+     * int r - The row of the tile location. Assumed to be valid.
      * int c - The column of the tile location. Assumed to be valid.
-     * char currentPlayer - The character representing the current player
-     * char[][] - The game board
+     * char player - The character representing the current player
      * Description: Places a tile onto a valid location on the game board.
      */
-    public void placeTile(int r, int c, char currentPlayer, char[][] board) {
+    public void placeTile(char[][] board, int r, int c, char player) {
         // Loop through piece at (r,c)
         for (int i = r; i < r + getRows(); i++) {
             for (int j = c; j < c + getCols(); j++) {

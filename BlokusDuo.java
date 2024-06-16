@@ -560,7 +560,7 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                     // Can only place if valid
                     if(canPlace) {
                         // Place the tile
-                        selectedTile.placeTile(r, c, P1, board);
+                        selectedTile.placeTile(board, r, c, P1);
                         // Mark tile as used
                         selectedTile.setUsed(true);
 
