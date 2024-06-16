@@ -343,7 +343,7 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                 for (int j = c; j < c + selectedTile.getCols() && valid; j++) {
                     if (selectedTile.getSquares()[i - r][j - c]) {
                         // Occupied area must be empty or an available character ('*')
-                        valid = board[i][j] == EMPTY || board[i][j] == AVAIL;
+                        valid &= board[i][j] == EMPTY || board[i][j] == AVAIL;
 
                         // Check if tile touches at least one available character
                         touchesAvail |= board[i][j] == AVAIL;
@@ -351,13 +351,13 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                         // Loop up/down/left/right directions
                         for(int k = 0; k<DIR.length && valid; k++) {
                             // Get new i and j values
-                            ni = DIR[k][0];
-                            nj = DIR[k][1];
+                            ni = i+DIR[k][0];
+                            nj = j+DIR[k][1];
 
                             // Check if new coordinates are in bounds
-                            if(ni >= 0 && ni < BOARD_SIZE && nj >= 0 && nj < BOARD_SIZE) {
+                            if(inRange(ni) && inRange(nj)) {
                                 // Adjacent tiles should not match the player's
-                                valid = board[ni][nj] != player;
+                                valid &= board[ni][nj] != player;
                             }
                         }
                     }
