@@ -646,7 +646,7 @@ Map<String, Tile> refTiles = Tile.newTileSet();
 
                                 // Get user input for tile
                                 System.out.printf("Select a tile to place (%s to quit): ", QUIT_VAL);
-                                tileName = sc.nextLine().toUpperCase(); // convert to upper for case insensitivity
+                                tileName = sc.nextLine().trim().toUpperCase(); // convert to upper for case insensitivity
 
                                 // User chose to quit
                                 if (tileName.equals(QUIT_VAL)) {
