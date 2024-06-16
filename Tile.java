@@ -66,11 +66,11 @@ public class Tile {
     }
 
     /*
-     * Method name: getUsed()
+     * Method name: isUsed()
      * Return type: boolean - Whether or not the Tile instance has been used in game.
-     * Description: Accessor method for the used attribute in the Tile class.
+     * Description: Accessor method for the used attribute.
      */
-    public boolean getUsed() {
+    public boolean isUsed() {
         return used;
     }
 

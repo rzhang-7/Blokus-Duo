@@ -57,7 +57,7 @@ public class Saves {
             // Loop through all tiles
             for (Map.Entry<String, Tile> entry : p1Tiles.entrySet()) {
                 // If tile is used, write its name to file
-                if (entry.getValue().getUsed()) {
+                if (entry.getValue().isUsed()) {
                     bw.write(entry.getKey());
                     bw.newLine();
                 }
@@ -79,7 +79,7 @@ public class Saves {
             // Loop through all tiles
             for (Map.Entry<String, Tile> entry : p2Tiles.entrySet()) {
                 // If tile is used, write its name to file
-                if (entry.getValue().getUsed()) {
+                if (entry.getValue().isUsed()) {
                     bw.write(entry.getKey());
                     bw.newLine();
                 }

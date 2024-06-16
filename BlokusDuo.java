@@ -245,7 +245,7 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                             if (tileSquares[i - (maxRow - refTile.getRows())][j]) {
                                 // TODO: Use invalid character if tile cannot be placed
                                 // Fill with player colour if unused
-                                System.out.printf("[%c]", (playerTile.getUsed() ? EMPTY : playerChar));
+                                System.out.printf("[%c]", (playerTile.isUsed() ? EMPTY : player));
                             } else {
                                 System.out.print("   ");
                             }
@@ -643,15 +643,15 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                                 else if (p1Tiles.get(tileName) != null) {
                                     selectedTile = p1Tiles.get(tileName);
                                     // Tile has already been used
-                                    if (selectedTile.getUsed()) {
-                                        System.out.printf("ERROR: Tile %s has already been placed%n", tileName);
+                                    if (selectedTile.isUsed()) {
+                                        printError(String.format("Tile %s has already been placed.", tileName));
                                     }
                                     // Place tile somewhere
                                     else {
                                         placeTile(tileName, selectedTile, board);
 
                                         // Exit loop if successfully placed tile
-                                        if (selectedTile.getUsed()) {
+                                        if (selectedTile.isUsed()) {
                                             p1Score += selectedTile.getPoints(); // Increment player score
                                             tileSelect = true;
                                         }
