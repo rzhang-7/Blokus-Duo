@@ -243,9 +243,14 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                         if (i >= maxRow - refTile.getRows()) {
                             // Check if empty tile
                             if (tileSquares[i - (maxRow - refTile.getRows())][j]) {
-                                // TODO: Use invalid character if tile cannot be placed
+                                // Use invalid character if tile cannot be placed
+                                if(!playerTile.isPlaceable()) {
+                                    System.out.printf("[%c]", INVALID);
+                                }
                                 // Fill with player colour if unused
+                                else {
                                 System.out.printf("[%c]", (playerTile.isUsed() ? EMPTY : player));
+                                }
                             } else {
                                 System.out.print("   ");
                             }
