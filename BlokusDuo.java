@@ -666,7 +666,8 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                                         // Exit loop if successfully placed tile
                                         if (selectedTile.isUsed()) {
                                             p1Score += selectedTile.getPoints(); // Increment player score
-                                            tileSelect = true;
+                                            tileSelect = true; // Exit tile selection
+                                            menuSelect = true; // Exit menu selection
                                         }
                                     }
                                 }
