@@ -11,6 +11,7 @@ public class Tile {
     private int rows;
     private int cols;
     private boolean used;
+    private boolean placeable;
     private boolean[][] squares;
 
     /*
@@ -75,6 +76,15 @@ public class Tile {
     }
 
     /*
+     * Method name: isPlaceable()
+     * Return type: boolean - Whether or not the Tile instance can be placed on the board.
+     * Description: Accessor method for the placeable attribute.
+     */
+    public boolean isPlaceable() {
+        return placeable;
+    }
+
+    /*
      * Method name: setRows()
      * Parameters: int rows - The new number of rows
      * Description: Mutator method for the rows attribute in the Tile class.
@@ -108,6 +118,15 @@ public class Tile {
      */
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    /*
+     * Method name: setRows()
+     * Parameters: boolean placeable - The new placeable state
+     * Description: Mutator method for the placeable attribute.
+     */
+    public void setPlaceable(boolean placeable) {
+        this.placeable = placeable;
     }
 
     /*
@@ -214,6 +233,45 @@ public class Tile {
             for (int j = c; j < c + getCols(); j++) {
                 // Square in tile is not empty
                 if (getSquares()[i - r][j - c]) {
+                    board[i][j] = player;
+                }
+            }
+        }
+    }
+
+    /*
+     * Method name: checkPlaceable
+     * Parameters: char[][] - The game board
+     * Description: Checks if the tile instance can be placed anywhere on the board.
+     */
+    public void checkPlaceable(char[][] board, char player) {
+        // Declare variables
+        boolean place = false;
+
+        // Iterate through the board
+        for(int i = 0; i<BlokusDuo.BOARD_SIZE && !place; i++) {
+            for(int j = 0; j<BlokusDuo.BOARD_SIZE && !place; j++) {
+                // Rotate to get all positions
+                for(int k = 0; k<4; k++) {
+                    rotateRight();
+                    // Check if tile can be placed
+                    place |= canPlaceAt(board, i, j, player);
+                }
+
+                // Flip and rotate to get other potential positions
+                flipVert();
+                for(int k = 0; k<4; k++) {
+                    rotateRight();
+                    // Check if tile can be placed
+                    place |= canPlaceAt(board, i, j, player);
+                }
+            }
+        }
+
+        // Update placeable state
+        setPlaceable(place);
+    }
+
     /*
      * Method name: canPlaceAt
      * Parameters: char[][] board - The game board
