@@ -10,6 +10,8 @@ import java.util.*;
  * Description: Driver code for the Blokus Duo game.
  */
 
+// TODO: Refactor method parameter order
+
 public class BlokusDuo {
     // Sizes
     public static final int BOARD_SIZE = 14;
@@ -208,17 +210,17 @@ public class BlokusDuo {
     /*
      * Method name: printTiles()
      * Parameters: Map<String, Tile> tiles - The tile set used by the player
-     * char playerChar - The symbol representing the current player; future
+     * char player - The character representing the current player; future
      * implementations may make the game two-player rather than single player.
      * Description: Displays all the game tiles for the player
      */
-    public static void printTiles(Map<String, Tile> tiles, char playerChar) {
+    public static void printTiles(Map<String, Tile> tiles, char player) {
         final String[][] TILE_ROWS = { { "I1", "I2", "I3", "V3", "O" }, { "T4", "L4", "Z4", "I4" },
                 { "F", "X", "P", "W" }, { "Z5", "U", "T5", "V5" }, { "N", "Y", "L5" }, { "I5" } };
         Tile refTile, playerTile;
         int maxRow = 0;
         boolean[][] tileSquares;
-Map<String, Tile> refTiles = Tile.newTileSet();
+        Map<String, Tile> refTiles = Tile.newTileSet();
 
         // Print tiles on a line
         for (String[] line : TILE_ROWS) {
@@ -249,7 +251,7 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                                 }
                                 // Fill with player colour if unused
                                 else {
-                                System.out.printf("[%c]", (playerTile.isUsed() ? EMPTY : player));
+                                    System.out.printf("[%c]", (playerTile.isUsed() ? EMPTY : player));
                                 }
                             } else {
                                 System.out.print("   ");
@@ -328,7 +330,7 @@ Map<String, Tile> refTiles = Tile.newTileSet();
      * Parameters: char[][] board - The game board
      * Map<String, Tile> - The player's tile set
      * char player - The character representing the player
-     * Return type: boolean - Whether or not the player can make any tile placements
+     * Return type: boolean - Whether or not the player can make any valid tile placements
      */
     public static boolean canMove(char[][] board, Map<String, Tile> tiles, char player) {
         boolean moveable = false;
@@ -563,10 +565,6 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                         selectedTile.placeTile(board, r, c, P1);
                         // Mark tile as used
                         selectedTile.setUsed(true);
-
-                        // TODO: Update board
-                        // * Write tile to board
-                        // * Mark available tiles
 
                         // Break out of loop
                         placed = true;
@@ -910,26 +908,26 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                 p1CanMove = canMove(board, p1Tiles, P1);
                 p2CanMove = canMove(board, p2Tiles, P2);
 
-            // Game is over when neither player can move
-            if (!p1CanMove && !p2CanMove) {
-                System.out.println();
-                System.out.println("**GAME OVER**");
-                // Scores are equal; tie game
-                if (p1Score == p2Score) {
-                    System.out.printf("Tie Game: Both players scored %d points.%n", p1Score);
-                }
-                // Either player 1 or player 2 wins
-                else {
-                    System.out.printf("Player %d wins!", (p1Score > p2Score ? 1 : 2));
-                }
+                // Game is over when neither player can move
+                if (!p1CanMove && !p2CanMove) {
+                    System.out.println();
+                    System.out.println("**GAME OVER**");
+                    // Scores are equal; tie game
+                    if (p1Score == p2Score) {
+                        System.out.printf("Tie Game: Both players scored %d points.%n", p1Score);
+                    }
+                    // Either player 1 or player 2 wins
+                    else {
+                        System.out.printf("Player %d wins!", (p1Score > p2Score ? 1 : 2));
+                    }
 
-                // Return to main menu
-                System.out.println();
-                System.out.println("Returning to main menu...");
-                System.out.println("<Press [Enter] to continue>");
-                sc.nextLine();
+                    // Return to main menu
+                    System.out.println();
+                    System.out.println("Returning to main menu...");
+                    System.out.println("<Press [Enter] to continue>");
+                    sc.nextLine();
+                }
             }
-        }
         }
     }
 

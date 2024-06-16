@@ -33,7 +33,7 @@ public class Tile {
     /*
      * Method name: getPoints()
      * Return type: int - The point-value of the Tile instance
-     * Description: Accessor method for the points attribute in the Tile class.
+     * Description: Accessor method for the points attribute.
      */
     public int getPoints() {
         return points;
@@ -42,7 +42,7 @@ public class Tile {
     /*
      * Method name: getRows()
      * Return type: int - The length of the Tile instance
-     * Description: Accessor method for the rows attribute in the Tile class.
+     * Description: Accessor method for the rows attribute.
      */
     public int getRows() {
         return rows;
@@ -51,7 +51,7 @@ public class Tile {
     /*
      * Method name: getCols()
      * Return type: int - The width of the Tile instance
-     * Description: Accessor method for the cols attribute in the Tile class.
+     * Description: Accessor method for the cols attribute.
      */
     public int getCols() {
         return cols;
@@ -60,7 +60,7 @@ public class Tile {
     /*
      * Method name: getSquares()
      * Return type: boolean[][] - The square area taken up by the Tile instance
-     * Description: Accessor method for the squares attribute in the Tile class.
+     * Description: Accessor method for the squares attribute.
      */
     public boolean[][] getSquares() {
         return squares;
@@ -87,7 +87,7 @@ public class Tile {
     /*
      * Method name: setRows()
      * Parameters: int rows - The new number of rows
-     * Description: Mutator method for the rows attribute in the Tile class.
+     * Description: Mutator method for the rows attribute.
      */
     public void setRows(int rows) {
         this.rows = rows;
@@ -96,7 +96,7 @@ public class Tile {
     /*
      * Method name: setCols()
      * Parameters: int cols - The new number of columns
-     * Description: Mutator method for the cols attribute in the Tile class.
+     * Description: Mutator method for the cols attribute.
      */
     public void setCols(int cols) {
         this.cols = cols;
@@ -105,7 +105,7 @@ public class Tile {
     /*
      * Method name: setSquares()
      * Parameters: boolean[][] newSquares - The new tile area
-     * Description: Mutator method for the squares attribute in the Tile class.
+     * Description: Mutator method for the squares attribute.
      */
     public void setSquares(boolean[][] newSquares) {
         squares = newSquares;
@@ -114,7 +114,7 @@ public class Tile {
     /*
      * Method name: setUsed()
      * Parameters: boolean used - The new used state.
-     * Description: Mutator method for the used attribute in the Tile class.
+     * Description: Mutator method for the used attribute.
      */
     public void setUsed(boolean used) {
         this.used = used;
@@ -312,7 +312,7 @@ public class Tile {
                                 // Adjacent tiles should not match the player's
                                 valid &= board[ni][nj] != player;
                             }
-        }
+                        }
                     }
                 }
             }
