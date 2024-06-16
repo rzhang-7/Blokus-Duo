@@ -319,53 +319,79 @@ Map<String, Tile> refTiles = Tile.newTileSet();
     }
 
     /*
-     * Method name: checkValid
+     * Method name: canMove
      * Parameters: char[][] board - The game board
-     * int r - The row of the tile
-     * int c - The column of the tile
-     * Tile selectedTile - The tile to place
-     * char player - The player to check
-     * Return type: boolean - Whether or not the tile can be placed at the specified
-     * row and column
-     * Description: Checks whether or not a tile can be placed at a specified location.
+     * Map<String, Tile> - The player's tile set
+     * char player - The character representing the player
+     * Return type: boolean - Whether or not the player can make any tile placements
      */
-    public static boolean checkValid(char[][] board, int r, int c, Tile selectedTile, char player) {
-        // Declare constants and variables
-        final int[][] DIR = {{0,1},{-1,0},{0,-1},{1,0}};
-        int ni, nj;
-        boolean valid = true, touchesAvail = false;
-        // Tile is out of bounds
-        if (r + selectedTile.getRows() >= BOARD_SIZE || c + selectedTile.getCols() >= BOARD_SIZE) {
-            valid = false;
-        } else {
-            // Overlapping other tiles
-            for (int i = r; i < r + selectedTile.getRows() && valid; i++) {
-                for (int j = c; j < c + selectedTile.getCols() && valid; j++) {
-                    if (selectedTile.getSquares()[i - r][j - c]) {
-                        // Occupied area must be empty or an available character ('*')
-                        valid &= board[i][j] == EMPTY || board[i][j] == AVAIL;
+    public static boolean canMove(char[][] board, Map<String, Tile> tiles, char player) {
+        // TODO: check all tiles
+    }
 
-                        // Check if tile touches at least one available character
-                        touchesAvail |= board[i][j] == AVAIL;
+    /*
+     * Method name: updateAvailableSpaces
+     * Parameters: char[][] board - The game board
+     * char player - The character representing the player to check available spaces for
+     * Map<String, Tile> - The tile set of the player
+     * Description: Marks valid placement spaces on the board for a player.
+     */
+    public static void updateAvailableSpaces(char[][] board, char player, Map<String, Tile> tiles) {
+        // Declare variables and constants
+        final int[][] DIAG = {{1,1},{1,-1},{-1,-1},{-1,1}}; // diagonals
+        final int[][] ADJ = {{0,1},{-1,0},{0,-1},{1,0}}; // adjacent
+        int di, dj, ai, aj;
+        boolean isAdj = false;
 
-                        // Loop up/down/left/right directions
-                        for(int k = 0; k<DIR.length && valid; k++) {
-                            // Get new i and j values
-                            ni = i+DIR[k][0];
-                            nj = j+DIR[k][1];
+        // Iterate through the board
+        for(int i = 0; i<BOARD_SIZE; i++) {
+            for(int j = 0; j<BOARD_SIZE; j++) {
+                if(board[i][j] == player) {
+                    // Check each corner
+                    for(int[] dg : DIAG) {
+                        di = i + dg[0];
+                        dj = j + dg[1];
+                        // Check if corner is within the board and is empty
+                        if(inRange(di) && inRange(dj) && board[di][dj] == EMPTY) {
+                            // Check if its adjacent spaces do not match the player
+                            for(int k = 0; k < ADJ.length && !isAdj; k++) {
+                                ai = di + ADJ[k][0];
+                                aj = dj + ADJ[k][1];
+                                if(inRange(ai) && inRange(aj) && board[ai][aj] == player)
+                                    isAdj = true;
+                            }
 
-                            // Check if new coordinates are in bounds
-                            if(inRange(ni) && inRange(nj)) {
-                                // Adjacent tiles should not match the player's
-                                valid &= board[ni][nj] != player;
+                            // TODO: Check if any remaining player pieces can be placed
+                            // Mark corner as available if no adjacent spaces were found
+                            if(!isAdj) {
+                                board[di][dj] = AVAIL;
                             }
                         }
+                        // Reset adjacency check
+                        isAdj = false;
                     }
+                }
+                // Make sure available spaces are not adjacent to player characters
+                // Existing available spaces may not be updated when new spaces are placed
+                else if(board[i][j] == AVAIL) {
+                    // Check if its adjacent spaces do not match the player
+                    for(int k = 0; k < ADJ.length && !isAdj; k++) {
+                        ai = i + ADJ[k][0];
+                        aj = j + ADJ[k][1];
+                        if(inRange(ai) && inRange(aj) && board[ai][aj] == player)
+                            isAdj = true;
+                    }
+                    // TODO: Check if any remaining player pieces can be placed
+                    // Mark corner as unavailable if adjacent spaces were found
+                    if(isAdj) {
+                        board[i][j] = EMPTY;
+                    }
+
+                    // Reset adjacency check
+                    isAdj = false;
                 }
             }
         }
-
-        return valid && touchesAvail;
     }
 
     /*
@@ -426,7 +452,7 @@ Map<String, Tile> refTiles = Tile.newTileSet();
         // Allow user to shift, rotate, or flip tile until valid or they choose another tile
         while(!placed) {
             // Update and display board
-            canPlace = checkValid(board, r, c, selectedTile, P1);
+            canPlace = selectedTile.canPlaceAt(board, r, c, P1);
             printBoard(board, canPlace, r, c, selectedTile);
 
             // Display selection menu

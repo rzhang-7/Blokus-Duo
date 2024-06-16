@@ -214,10 +214,53 @@ public class Tile {
             for (int j = c; j < c + getCols(); j++) {
                 // Square in tile is not empty
                 if (getSquares()[i - r][j - c]) {
-                    board[i][j] = currentPlayer;
+    /*
+     * Method name: canPlaceAt
+     * Parameters: char[][] board - The game board
+     * int r - The row of the tile
+     * int c - The column of the tile
+     * char player - The player to check
+     * Return type: boolean - Whether or not the tile can be placed at the specified
+     * row and column
+     * Description: Checks whether or not a tile can be placed at a specified location.
+     */
+    public boolean canPlaceAt(char[][] board, int r, int c, char player) {
+        // Declare constants and variables
+        final int[][] DIR = {{0,1},{-1,0},{0,-1},{1,0}};
+        int ni, nj;
+        boolean valid = true, touchesAvail = false;
+        // Tile is out of bounds
+        if (r + getRows() >= BlokusDuo.BOARD_SIZE || c + getCols() >= BlokusDuo.BOARD_SIZE) {
+            valid = false;
+        } else {
+            // Overlapping other tiles
+            for (int i = r; i < r + getRows() && valid; i++) {
+                for (int j = c; j < c + getCols() && valid; j++) {
+                    if (getSquares()[i - r][j - c]) {
+                        // Occupied area must be empty or an available character ('*')
+                        valid &= board[i][j] == BlokusDuo.EMPTY || board[i][j] == BlokusDuo.AVAIL;
+
+                        // Check if tile touches at least one available character
+                        touchesAvail |= board[i][j] == BlokusDuo.AVAIL;
+
+                        // Loop up/down/left/right directions
+                        for(int k = 0; k<DIR.length && valid; k++) {
+                            // Get new i and j values
+                            ni = i+DIR[k][0];
+                            nj = j+DIR[k][1];
+
+                            // Check if new coordinates are in bounds
+                            if(BlokusDuo.inRange(ni) && BlokusDuo.inRange(nj)) {
+                                // Adjacent tiles should not match the player's
+                                valid &= board[ni][nj] != player;
+                            }
+        }
+                    }
                 }
             }
         }
+
+        return valid && touchesAvail;
     }
 
     /*
