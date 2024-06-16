@@ -331,7 +331,15 @@ Map<String, Tile> refTiles = Tile.newTileSet();
      * Return type: boolean - Whether or not the player can make any tile placements
      */
     public static boolean canMove(char[][] board, Map<String, Tile> tiles, char player) {
-        // TODO: check all tiles
+        boolean moveable = false;
+
+        // Check all tiles
+        for (Map.Entry<String, Tile> entry : tiles.entrySet()) {
+            // A move can be made if any tile is placeable
+            moveable |= entry.getValue().isPlaceable();
+        }
+
+        return moveable;
     }
 
     /*
@@ -881,15 +889,25 @@ Map<String, Tile> refTiles = Tile.newTileSet();
 
             // TODO: CPU move if game has not been quit
             if (running) {
+                // Check for available moves for p2
+                p2CanMove = canMove(board, p2Tiles, P2);
+
                 if (p2CanMove) {
                     // cpuMove(p2Tiles, isHard);
-                    // p2CanMove = checkAvailableMoves(board, p2Tiles);
-                } else {
+                }
+                // Player 2 has no valid moves; skip turn
+                else {
                     System.out.println("Player 2 cannot move. Skipping turn...");
                     System.out.println("<Press [Enter] to continue>");
                     sc.nextLine();
                 }
-            }
+
+                // Update board
+                updateAvailableSpaces(board, P1, p1Tiles);
+
+                // Check for available moves
+                p1CanMove = canMove(board, p1Tiles, P1);
+                p2CanMove = canMove(board, p2Tiles, P2);
 
             // Game is over when neither player can move
             if (!p1CanMove && !p2CanMove) {
@@ -911,7 +929,7 @@ Map<String, Tile> refTiles = Tile.newTileSet();
                 sc.nextLine();
             }
         }
-
+        }
     }
 
     /*
