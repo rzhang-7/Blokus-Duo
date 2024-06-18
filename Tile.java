@@ -284,36 +284,49 @@ public class Tile {
     }
 
     /*
-     * Method name: checkPlaceable
-     * Parameters: char[][] - The game board
-     * Description: Checks if the tile instance can be placed anywhere on the board.
+     * Method name: getMoves
+     * Parameters: char[][] board - The game board
+     * char player - The character representing the player
+     * Return type: ArrayList<Tile> - A list of Tile instances that can be placed on
+     * the board
+     * Description: Returns a list of valid tile arrangements for each index of the
+     * board and updates the placeable attribute.
      */
-    public void checkPlaceable(char[][] board, char player) {
+    public ArrayList<Tile> getMoves(char[][] board, char player) {
         // Declare variables
-        boolean place = false;
+        ArrayList<Tile> moves = new ArrayList<>();
 
         // Iterate through the board
-        for(int i = 0; i<BlokusDuo.BOARD_SIZE && !place; i++) {
-            for(int j = 0; j<BlokusDuo.BOARD_SIZE && !place; j++) {
+        for (int i = 0; i < BlokusDuo.BOARD_SIZE; i++) {
+            for (int j = 0; j < BlokusDuo.BOARD_SIZE; j++) {
                 // Rotate to get all positions
-                for(int k = 0; k<4; k++) {
+                for (int k = 0; k < 4; k++) {
                     rotateRight();
                     // Check if tile can be placed
-                    place |= canPlaceAt(board, i, j, player);
+                    if (canPlaceAt(board, i, j, player)) {
+                        moves.add(new Tile(getPoints(), getRows(), getCols(), i, j, getSquaresCopy()));
+                    }
                 }
 
                 // Flip and rotate to get other potential positions
                 flipVert();
-                for(int k = 0; k<4; k++) {
+                for (int k = 0; k < 4; k++) {
                     rotateRight();
                     // Check if tile can be placed
-                    place |= canPlaceAt(board, i, j, player);
+                    if (canPlaceAt(board, i, j, player)) {
+                        moves.add(new Tile(getPoints(), getRows(), getCols(), i, j, getSquaresCopy()));
+                    }
                 }
             }
         }
 
+        // Return to original orientation
+        flipVert();
+
         // Update placeable state
-        setPlaceable(place);
+        setPlaceable(!moves.isEmpty());
+
+        return moves;
     }
 
     /*

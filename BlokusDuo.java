@@ -337,11 +337,70 @@ public class BlokusDuo {
 
         // Check all tiles
         for (Map.Entry<String, Tile> entry : tiles.entrySet()) {
-            // A move can be made if any tile is placeable
-            moveable |= entry.getValue().isPlaceable();
+            // Check if tile has not been used and is placeable
+            if(!entry.getValue().isUsed() && entry.getValue().isPlaceable()) {
+                // Get the available placements of each tile
+                tileMoves = entry.getValue().getMoves(board, player);
+
+                // Add tile moves to total moves
+                for (Tile t : tileMoves) {
+                    allMoves.add(new AbstractMap.SimpleEntry<>(entry.getKey(), t));
+                }
+            }
         }
 
-        return moveable;
+        return allMoves;
+    }
+
+    /*
+     * Method name: doMove
+     * Parameters: char[][] board - The game board
+     * Map<String,Tile> tiles - The player's tileSet
+     * char player - The character representing the player
+     * boolean isHard - The difficulty of the move selection
+     * Return type: int - The point value of the placed tile
+     * Description: Places a tile onto the board for player 2.
+     */
+    public static int doMove(char[][] board, Map<String,Tile> tiles, char player, boolean isHard) {
+        ArrayList<AbstractMap.SimpleEntry<String,Tile>> moves = getAllMoves(board, tiles, player);
+        int size, idx, r, c;
+        String tileName;
+        Tile t;
+
+        // Hard mode: Choose largest pieces first
+        if(isHard) {
+            // Sort by point value in descending
+            Collections.sort(moves, (x,y) -> {
+                return Integer.compare(y.getValue().getPoints(),x.getValue().getPoints());
+            });
+
+            // Use first element
+            idx = 0;
+        }
+        // Easy mode: Choose random piece
+        else {
+            // Get random tile
+            size = moves.size();
+            idx = (int)(Math.random() * size);
+        }
+
+        // Get tile piece
+        t = moves.get(idx).getValue();
+
+        // Get tile name
+        tileName = moves.get(idx).getKey();
+
+        // Get coordinates
+        r = t.getPosR();
+        c = t.getPosC();
+
+        // Place tile on board
+        t.placeTile(board, r, c, PLACEABLE);
+
+        // Mark tile as used
+        tiles.get(tileName).setUsed(true);
+
+        return t.getPoints();
     }
 
     /*
@@ -886,13 +945,16 @@ public class BlokusDuo {
                 sc.nextLine();
             }
 
-            // TODO: CPU move if game has not been quit
+            // Game has not been quit
             if (running) {
                 // Check for available moves for p2
-                p2CanMove = canMove(board, p2Tiles, P2);
+                p2CanMove = !getAllMoves(board, p2Tiles, P2).isEmpty();
 
+                // P2 move
                 if (p2CanMove) {
-                    // cpuMove(p2Tiles, isHard);
+
+                    // Place tile for p2 and increment score
+                    p2Score += doMove(board, p2Tiles, P2, isHard);
                 }
                 // Player 2 has no valid moves; skip turn
                 else {
@@ -905,8 +967,8 @@ public class BlokusDuo {
                 updateAvailableSpaces(board, P1, p1Tiles);
 
                 // Check for available moves
-                p1CanMove = canMove(board, p1Tiles, P1);
-                p2CanMove = canMove(board, p2Tiles, P2);
+                p1CanMove = !getAllMoves(board, p1Tiles, P1).isEmpty();
+                p2CanMove = !getAllMoves(board, p2Tiles, P2).isEmpty();
 
                 // Game is over when neither player can move
                 if (!p1CanMove && !p2CanMove) {
