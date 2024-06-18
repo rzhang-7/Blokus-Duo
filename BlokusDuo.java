@@ -330,10 +330,13 @@ public class BlokusDuo {
      * Parameters: char[][] board - The game board
      * Map<String, Tile> - The player's tile set
      * char player - The character representing the player
-     * Return type: boolean - Whether or not the player can make any valid tile placements
+     * Return type: boolean - Whether or not the player can make any valid tile
+     * placements
      */
-    public static boolean canMove(char[][] board, Map<String, Tile> tiles, char player) {
-        boolean moveable = false;
+    public static ArrayList<AbstractMap.SimpleEntry<String, Tile>> getAllMoves(char[][] board, Map<String, Tile> tiles,
+            char player) {
+        ArrayList<AbstractMap.SimpleEntry<String, Tile>> allMoves = new ArrayList<>();
+        ArrayList<Tile> tileMoves;
 
         // Check all tiles
         for (Map.Entry<String, Tile> entry : tiles.entrySet()) {
