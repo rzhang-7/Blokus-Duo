@@ -93,6 +93,22 @@ public class Tile {
     }
 
     /*
+     * Method name: getSquaresCopy()
+     * Return type: boolean[][] - A deep copy of the squares taken up by the
+     * Tile instance
+     * Description: Gets a deep copy of the squares array.
+     */
+    public boolean[][] getSquaresCopy() {
+        boolean[][] squaresCopy = new boolean[getRows()][getCols()];
+
+        // Copy the squares array
+        for (int i = 0; i < getRows(); i++) {
+            System.arraycopy(getSquares()[i], 0, squaresCopy[i], 0, getCols());
+        }
+        return squaresCopy;
+    }
+
+    /*
      * Method name: isUsed()
      * Return type: boolean - Whether or not the Tile instance has been used in game.
      * Description: Accessor method for the used attribute.
