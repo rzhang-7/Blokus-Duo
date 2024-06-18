@@ -1003,6 +1003,9 @@ touchesCorner = false;
                     System.out.println("Returning to main menu...");
                     System.out.println("<Press [Enter] to continue>");
                     sc.nextLine();
+
+                    // Exit game loop
+                    running = false;
                 }
             }
         }
