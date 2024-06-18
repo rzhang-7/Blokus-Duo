@@ -17,12 +17,13 @@ public class Tile {
     private boolean[][] squares;
 
     /*
-     * Method name: Tile()
+     * Method name: Tile
      * Parameters: int points - The point value of the tile
-     * int size - The length of the square grid containing the tile
-     * boolean[][] squares - The square grid representing the squares occupied by
+     * int rows - The length of the grid containing the tile
+     * int cols - The width of the grid containing the tile
+     * boolean[][] squares - The grid representing the squares occupied by
      * the tile
-     * Description: Constructor method that defines the point value, size, and
+     * Description: Constructor method that defines the point value, dimensions, and
      * squares occupied by the tile.
      */
     public Tile(int points, int rows, int cols, boolean[][] squares) {
@@ -285,7 +286,7 @@ public class Tile {
      * int r - The row of the tile location. Assumed to be valid.
      * int c - The column of the tile location. Assumed to be valid.
      * char player - The character representing the current player
-     * Description: Places a tile onto a valid location on the game board.
+     * Description: Places the tile onto a valid location on the game board.
      */
     public void placeTile(char[][] board, int r, int c, char player) {
         // Loop through piece at (r,c)
