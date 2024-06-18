@@ -19,12 +19,16 @@ public class BlokusDuo {
 
     private static final String QUIT_VAL = "0";
 
+    // Starting positions
+    private static final int START_1 = 4, START_2 = 9;
+
     // Display board characters
     public static final char P1 = '@';
     public static final char P2 = 'O';
     public static final char INVALID = 'x';
     public static final char AVAIL = '*';
     public static final char EMPTY = ' ';
+public static final char PLACEABLE = '+';
 
     /*
      * Method name: printError
@@ -159,9 +163,6 @@ public class BlokusDuo {
      */
 
     public static void printBoard(char[][] board, boolean valid, int r, int c, Tile selectedTile) {
-        // Declare constants
-        final char PLACEABLE = '+';
-
         System.out.println();
         // Print column coordinates
         System.out.print("   ");
@@ -1053,8 +1054,6 @@ touchesCorner = false;
      * Description: Initializes the game board for a new game.
      */
     public static void initBoard(char[][] board) {
-        // Starting positions
-        final int START_1 = 4, START_2 = 9;
 
         // Fill board with empty characters
         for(char[] row : board) {
