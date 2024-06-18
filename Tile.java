@@ -111,7 +111,8 @@ public class Tile {
 
     /*
      * Method name: isUsed()
-     * Return type: boolean - Whether or not the Tile instance has been used in game.
+     * Return type: boolean - Whether or not the Tile instance has been used in
+     * game.
      * Description: Accessor method for the used attribute.
      */
     public boolean isUsed() {
@@ -120,7 +121,8 @@ public class Tile {
 
     /*
      * Method name: isPlaceable()
-     * Return type: boolean - Whether or not the Tile instance can be placed on the board.
+     * Return type: boolean - Whether or not the Tile instance can be placed on the
+     * board.
      * Description: Accessor method for the placeable attribute.
      */
     public boolean isPlaceable() {
@@ -354,11 +356,12 @@ public class Tile {
      * char player - The player to check
      * Return type: boolean - Whether or not the tile can be placed at the specified
      * row and column
-     * Description: Checks whether or not a tile can be placed at a specified location.
+     * Description: Checks whether or not a tile can be placed at a specified
+     * location.
      */
     public boolean canPlaceAt(char[][] board, int r, int c, char player) {
         // Declare constants and variables
-        final int[][] DIR = {{0,1},{-1,0},{0,-1},{1,0}};
+        final int[][] DIR = { { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 0 } };
         int ni, nj;
         boolean valid = true, touchesAvail = false;
         // Tile is out of bounds
@@ -376,13 +379,13 @@ public class Tile {
                         touchesAvail |= board[i][j] == BlokusDuo.AVAIL;
 
                         // Loop up/down/left/right directions
-                        for(int k = 0; k<DIR.length && valid; k++) {
+                        for (int k = 0; k < DIR.length && valid; k++) {
                             // Get new i and j values
-                            ni = i+DIR[k][0];
-                            nj = j+DIR[k][1];
+                            ni = i + DIR[k][0];
+                            nj = j + DIR[k][1];
 
                             // Check if new coordinates are in bounds
-                            if(BlokusDuo.inRange(ni) && BlokusDuo.inRange(nj)) {
+                            if (BlokusDuo.inRange(ni) && BlokusDuo.inRange(nj)) {
                                 // Adjacent tiles should not match the player's
                                 valid &= board[ni][nj] != player;
                             }
@@ -449,5 +452,4 @@ public class Tile {
 
         return newTiles;
     }
-
 }
