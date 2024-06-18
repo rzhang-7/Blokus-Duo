@@ -28,7 +28,7 @@ public class BlokusDuo {
     public static final char INVALID = 'x';
     public static final char AVAIL = '*';
     public static final char EMPTY = ' ';
-public static final char PLACEABLE = '+';
+    public static final char PLACEABLE = '+';
 
     /*
      * Method name: printError
@@ -247,7 +247,7 @@ public static final char PLACEABLE = '+';
                             // Check if empty tile
                             if (tileSquares[i - (maxRow - refTile.getRows())][j]) {
                                 // Use invalid character if tile cannot be placed
-                                if(!playerTile.isPlaceable()) {
+                                if (!playerTile.isPlaceable()) {
                                     System.out.printf("[%c]", INVALID);
                                 }
                                 // Fill with player colour if unused
@@ -399,6 +399,7 @@ public static final char PLACEABLE = '+';
         c = t.getPosC();
 
         // Place tile on board
+        // Use placing characters to let player 1 know where the tile was placed
         t.placeTile(board, r, c, PLACEABLE);
 
         // Mark tile as used
@@ -440,19 +441,19 @@ public static final char PLACEABLE = '+';
                                     isAdj = true;
                             }
 
-                                                        // Mark corner as available if no adjacent spaces were found
+                            // Mark corner as available if no adjacent spaces were found
                             if (!isAdj) {
                                 board[di][dj] = AVAIL;
                             }
-                        // Reset looping condition
-                        isAdj = false;
-}
+                            // Reset looping condition
+                            isAdj = false;
+                        }
                     }
                 }
                 // Make sure available spaces are not adjacent to player characters
                 // Existing available spaces may not be updated when new spaces are placed
                 else if (board[i][j] == AVAIL) {
-// Ensure available space touches at least one corner
+                    // Ensure available space touches at least one corner
                     for (int[] dg : DIAG) {
                         di = i + dg[0];
                         dj = j + dg[1];
@@ -466,16 +467,16 @@ public static final char PLACEABLE = '+';
                         if (inRange(ai) && inRange(aj) && board[ai][aj] == player)
                             isAdj = true;
                     }
-                                        // Mark corner as unavailable if adjacent spaces were found
+                    // Mark corner as unavailable if adjacent spaces were found
                     if (isAdj || !touchesCorner) {
                         board[i][j] = EMPTY;
                     }
 
-                    }
+                }
                 // Reset corner and adjacency check
-touchesCorner = false;
-                    isAdj = false;
-                            }
+                touchesCorner = false;
+                isAdj = false;
+            }
         }
     }
 
@@ -484,7 +485,8 @@ touchesCorner = false;
      * Parameters: String tileName - The name of the selected tile
      * Tile selectedTile - The Tile object of the selected tile
      * char[][] board - The game board
-     * Description: Input loop to place a tile onto the board during a player's turn.
+     * Description: Input loop to place a tile onto the board during a player's
+     * turn.
      */
     public static void placeTile(String tileName, Tile selectedTile, char[][] board) {
         // Declare variables
@@ -499,7 +501,7 @@ touchesCorner = false;
 
         // Get coordinates
         do {
-            System.out.printf("Enter the coordinates ((r, c), \"%s\" to quit): ", QUIT_VAL);
+            System.out.printf("Enter the coordinates ((r, c), \"%s\" to cancel): ", QUIT_VAL);
             coords = sc.nextLine();
 
             // Extract numbers from input string
@@ -534,8 +536,9 @@ touchesCorner = false;
 
         } while (!validCoord);
 
-        // Allow user to shift, rotate, or flip tile until valid or they choose another tile
-        while(!placed) {
+        // Allow user to shift, rotate, or flip tile until valid or they choose another
+        // tile
+        while (!placed) {
             // Update and display board
             canPlace = selectedTile.canPlaceAt(board, r, c, P1);
             printBoard(board, canPlace, r, c, selectedTile);
@@ -545,7 +548,7 @@ touchesCorner = false;
             System.out.println("  [W/S/A/D] Shift tile up/down/left/right");
             System.out.println("  [E/R] Rotate left/right");
             System.out.println("  [V/F] Flip vertically/horizontally");
-            if(canPlace)
+            if (canPlace)
                 System.out.println("  [C] Place tile");
             System.out.printf("  [%s] Cancel placement%n", QUIT_VAL);
 
@@ -553,15 +556,14 @@ touchesCorner = false;
             System.out.print("Enter your selection: ");
             tileTransformation = sc.nextLine().toUpperCase();
 
-            switch(tileTransformation) {
+            switch (tileTransformation) {
                 // Shift up by 1
                 case "W":
                 case "[W]":
                     // Check if tile moves out of bounds
-                    if(r - 1 < 0) {
+                    if (r - 1 < 0) {
                         printError("Tile is out of bounds.");
-                    }
-                    else {
+                    } else {
                         r--;
                     }
                     break;
@@ -570,10 +572,9 @@ touchesCorner = false;
                 case "S":
                 case "[S]":
                     // Check if tile moves out of bounds
-                    if(r + 1 >= BOARD_SIZE) {
+                    if (r + 1 >= BOARD_SIZE) {
                         printError("Tile is out of bounds.");
-                    }
-                    else {
+                    } else {
                         r++;
                     }
                     break;
@@ -582,10 +583,9 @@ touchesCorner = false;
                 case "A":
                 case "[A]":
                     // Check if tile moves out of bounds
-                    if(c - 1 < 0) {
+                    if (c - 1 < 0) {
                         printError("Tile is out of bounds.");
-                    }
-                    else {
+                    } else {
                         c--;
                     }
                     break;
@@ -594,10 +594,9 @@ touchesCorner = false;
                 case "D":
                 case "[D]":
                     // Check if tile moves out of bounds
-                    if(c + 1 >= BOARD_SIZE) {
+                    if (c + 1 >= BOARD_SIZE) {
                         printError("Tile is out of bounds.");
-                    }
-                    else {
+                    } else {
                         c++;
                     }
                     break;
@@ -630,7 +629,7 @@ touchesCorner = false;
                 case "C":
                 case "[C]":
                     // Can only place if valid
-                    if(canPlace) {
+                    if (canPlace) {
                         // Place the tile
                         selectedTile.placeTile(board, r, c, P1);
                         // Mark tile as used
@@ -638,8 +637,7 @@ touchesCorner = false;
 
                         // Break out of loop
                         placed = true;
-                    }
-                    else {
+                    } else {
                         printError("Tile cannot be placed. Try moving/rotating/flipping it, or choose another tile.");
                     }
                     break;
@@ -722,8 +720,9 @@ touchesCorner = false;
                                 printTiles(p1Tiles, P1); // May be p2 if doing 2-player
 
                                 // Get user input for tile
-                                System.out.printf("Select a tile to place (%s to quit): ", QUIT_VAL);
-                                tileName = sc.nextLine().trim().toUpperCase(); // convert to upper for case insensitivity
+                                System.out.printf("Select a tile to place (%s to cancel): ", QUIT_VAL);
+                                tileName = sc.nextLine().trim().toUpperCase(); // convert to upper for case
+                                                                               // insensitivity
 
                                 // User chose to quit
                                 if (tileName.equals(QUIT_VAL)) {
@@ -1083,7 +1082,7 @@ touchesCorner = false;
     public static void initBoard(char[][] board) {
 
         // Fill board with empty characters
-        for(char[] row : board) {
+        for (char[] row : board) {
             Arrays.fill(row, EMPTY);
         }
 
