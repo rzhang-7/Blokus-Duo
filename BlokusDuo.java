@@ -727,6 +727,10 @@ touchesCorner = false;
                                     if (selectedTile.isUsed()) {
                                         printError(String.format("Tile %s has already been placed.", tileName));
                                     }
+                                    // Tile cannot be placed
+                                    else if (!selectedTile.isPlaceable()) {
+                                        printError(String.format("Tile %s cannot be placed", tileName));
+                                    }
                                     // Place tile somewhere
                                     else {
                                         placeTile(tileName, selectedTile, board);
