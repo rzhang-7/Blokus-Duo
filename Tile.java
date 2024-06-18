@@ -8,6 +8,8 @@ import java.util.*;
 
 public class Tile {
     private final int points;
+    private int posR;
+    private int posC;
     private int rows;
     private int cols;
     private boolean used;
@@ -28,6 +30,30 @@ public class Tile {
         this.rows = rows;
         this.cols = cols;
         this.squares = squares;
+
+        placeable = true;
+    }
+
+    /*
+     * Method name: Tile
+     * Parameters: int points - The point value of the tile
+     * int rows - The length of the grid containing the tile
+     * int cols - The width of the grid containing the tile
+     * int posR - The row position of the tile
+     * int posC - The column position of the tile
+     * boolean[][] squares - The grid representing the squares occupied by
+     * the tile
+     * Description: Constructor method that defines the point value, dimensions, coordinates, and
+     * squares occupied by the tile.
+     */
+    public Tile(int points, int rows, int cols, int posR, int posC, boolean[][] squares) {
+        this.points = points;
+        this.rows = rows;
+        this.cols = cols;
+        this.posR = posR;
+        this.posC = posC;
+        this.squares = squares;
+        placeable = true;
     }
 
     /*
@@ -82,6 +108,24 @@ public class Tile {
      */
     public boolean isPlaceable() {
         return placeable;
+    }
+
+    /*
+     * Method name: getPosR()
+     * Return type: int - The row number of the tile instance in the game board
+     * Description: Accessor method for the posR attribute.
+     */
+    public int getPosR() {
+        return posR;
+    }
+
+    /*
+     * Method name: getPosC()
+     * Return type: int - The column number of the tile instance in the game board
+     * Description: Accessor method for the posC attribute.
+     */
+    public int getPosC() {
+        return posC;
     }
 
     /*
