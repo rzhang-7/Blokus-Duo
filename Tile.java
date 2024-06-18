@@ -362,7 +362,7 @@ public class Tile {
         int ni, nj;
         boolean valid = true, touchesAvail = false;
         // Tile is out of bounds
-        if (r + getRows() >= BlokusDuo.BOARD_SIZE || c + getCols() >= BlokusDuo.BOARD_SIZE) {
+        if (r + getRows() > BlokusDuo.BOARD_SIZE || c + getCols() > BlokusDuo.BOARD_SIZE) {
             valid = false;
         } else {
             // Overlapping other tiles
