@@ -409,65 +409,72 @@ public class BlokusDuo {
     /*
      * Method name: updateAvailableSpaces
      * Parameters: char[][] board - The game board
-     * char player - The character representing the player to check available spaces for
+     * char player - The character representing the player to check available spaces
+     * for
      * Map<String, Tile> - The tile set of the player
      * Description: Marks valid placement spaces on the board for a player.
      */
     public static void updateAvailableSpaces(char[][] board, char player, Map<String, Tile> tiles) {
         // Declare variables and constants
-        final int[][] DIAG = {{1,1},{1,-1},{-1,-1},{-1,1}}; // diagonals
-        final int[][] ADJ = {{0,1},{-1,0},{0,-1},{1,0}}; // adjacent
+        final int[][] DIAG = { { 1, 1 }, { 1, -1 }, { -1, -1 }, { -1, 1 } }; // diagonals
+        final int[][] ADJ = { { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 0 } }; // adjacent
         int di, dj, ai, aj;
-        boolean isAdj = false;
+        boolean isAdj = false, touchesCorner = false;
 
         // Iterate through the board
-        for(int i = 0; i<BOARD_SIZE; i++) {
-            for(int j = 0; j<BOARD_SIZE; j++) {
-                if(board[i][j] == player) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (board[i][j] == player) {
                     // Check each corner
-                    for(int[] dg : DIAG) {
+                    for (int[] dg : DIAG) {
                         di = i + dg[0];
                         dj = j + dg[1];
                         // Check if corner is within the board and is empty
-                        if(inRange(di) && inRange(dj) && board[di][dj] == EMPTY) {
+                        if (inRange(di) && inRange(dj) && board[di][dj] == EMPTY) {
                             // Check if its adjacent spaces do not match the player
-                            for(int k = 0; k < ADJ.length && !isAdj; k++) {
+                            for (int k = 0; k < ADJ.length && !isAdj; k++) {
                                 ai = di + ADJ[k][0];
                                 aj = dj + ADJ[k][1];
-                                if(inRange(ai) && inRange(aj) && board[ai][aj] == player)
+                                if (inRange(ai) && inRange(aj) && board[ai][aj] == player)
                                     isAdj = true;
                             }
 
-                            // TODO: Check if any remaining player pieces can be placed
-                            // Mark corner as available if no adjacent spaces were found
-                            if(!isAdj) {
+                                                        // Mark corner as available if no adjacent spaces were found
+                            if (!isAdj) {
                                 board[di][dj] = AVAIL;
                             }
-                        }
-                        // Reset adjacency check
+                        // Reset looping condition
                         isAdj = false;
+}
                     }
                 }
                 // Make sure available spaces are not adjacent to player characters
                 // Existing available spaces may not be updated when new spaces are placed
-                else if(board[i][j] == AVAIL) {
+                else if (board[i][j] == AVAIL) {
+// Ensure available space touches at least one corner
+                    for (int[] dg : DIAG) {
+                        di = i + dg[0];
+                        dj = j + dg[1];
+                        // Check if corner is within the board and is empty
+                        touchesCorner |= inRange(di) && inRange(dj) && board[di][dj] == player;
+                    }
                     // Check if its adjacent spaces do not match the player
-                    for(int k = 0; k < ADJ.length && !isAdj; k++) {
+                    for (int k = 0; k < ADJ.length && !isAdj; k++) {
                         ai = i + ADJ[k][0];
                         aj = j + ADJ[k][1];
-                        if(inRange(ai) && inRange(aj) && board[ai][aj] == player)
+                        if (inRange(ai) && inRange(aj) && board[ai][aj] == player)
                             isAdj = true;
                     }
-                    // TODO: Check if any remaining player pieces can be placed
-                    // Mark corner as unavailable if adjacent spaces were found
-                    if(isAdj) {
+                                        // Mark corner as unavailable if adjacent spaces were found
+                    if (isAdj || !touchesCorner) {
                         board[i][j] = EMPTY;
                     }
 
-                    // Reset adjacency check
+                    }
+                // Reset corner and adjacency check
+touchesCorner = false;
                     isAdj = false;
-                }
-            }
+                            }
         }
     }
 
