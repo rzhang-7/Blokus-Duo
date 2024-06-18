@@ -693,6 +693,15 @@ touchesCorner = false;
                     printBoard(board);
                     printScore(p1Score, p2Score);
 
+                    // If player 2 placed a tile, its initial character on the board would have been '+'
+                    // Change back to the player 2 character to avoid confusion during placement
+                    for(int i = 0; i<BOARD_SIZE; i++) {
+                        for(int j = 0; j<BOARD_SIZE; j++) {
+                            if(board[i][j] == PLACEABLE)
+                                board[i][j] = P2;
+                        }
+                    }
+
                     // Print selection menu
                     System.out.println("What would you like to do?");
                     System.out.println();
