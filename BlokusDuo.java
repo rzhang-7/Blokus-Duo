@@ -962,6 +962,17 @@ touchesCorner = false;
 
             // Game has not been quit
             if (running) {
+                // Update available spaces for player 2
+                updateAvailableSpaces(board, P2, p2Tiles);
+
+                // Keep an empty space for player 2 on the first turn
+                // Player 1 used the bottom right starting position
+                if(board[START_1][START_1] == EMPTY)
+                    board[START_1][START_1] = AVAIL;
+                // Player 1 used the top left starting position
+                else if(board[START_2][START_2] == EMPTY)
+                    board[START_2][START_2] = AVAIL;
+
                 // Check for available moves for p2
                 p2CanMove = !getAllMoves(board, p2Tiles, P2).isEmpty();
 
