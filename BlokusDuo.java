@@ -467,21 +467,34 @@ public class BlokusDuo {
      * Return type: int - The point value of the placed tile
      * Description: Places a tile onto the board for player 2.
      */
-    public static int doMove(char[][] board, Map<String,Tile> tiles, char player, boolean isHard) {
-        ArrayList<AbstractMap.SimpleEntry<String,Tile>> moves = getAllMoves(board, tiles, player);
-        int size, idx, r, c;
+    public static int doMove(char[][] board, Map<String, Tile> tiles, char player, boolean isHard, Tile prevMove) {
+        // Declare variables and constants
+        double MAX_DIST = (int)Math.sqrt(BOARD_SIZE*BOARD_SIZE*2); // The furthest a point can be from another
+        ArrayList<AbstractMap.SimpleEntry<String, Tile>> moves = getAllMoves(board, tiles, player);
+        int size, idx = 0, r, c, rTmp, cTmp;
+        double dist, minDist = MAX_DIST;
         String tileName;
         Tile t;
 
-        // Hard mode: Choose largest pieces first
-        if(isHard) {
-            // Sort by point value in descending
-            Collections.sort(moves, (x,y) -> {
-                return Integer.compare(y.getValue().getPoints(),x.getValue().getPoints());
-            });
+        // Hard mode: Choose largest pieces closest to player's last move
+        if (isHard) {
+            // Find tile that is closest to
+            for(int i = 0; i<moves.size(); i++) {
+                // Get positions
+                rTmp = moves.get(i).getValue().getPosR();
+                cTmp = moves.get(i).getValue().getPosC();
 
-            // Use first element
-            idx = 0;
+                // Get minimum distance from current move to previous move
+                dist = Math.hypot(prevMove.getPosC()-cTmp, prevMove.getPosR()-rTmp);
+
+                // Compare with current minimum distance
+                // Subtracting by tile points maximizes tile size
+                if(dist - moves.get(i).getValue().getPoints() < minDist) {
+                    // Update values
+                    minDist = dist - moves.get(i).getValue().getPoints();
+                    idx = i;
+                }
+            }
         }
         // Easy mode: Choose random piece
         else {
@@ -736,6 +749,10 @@ public class BlokusDuo {
                         selectedTile.placeTile(board, r, c, P1);
                         // Mark tile as used
                         selectedTile.setUsed(true);
+
+                        // Assign coordinates to tile
+                        selectedTile.setPosR(r);
+                        selectedTile.setPosC(c);
 
                         // Break out of loop
                         placed = true;
@@ -1090,7 +1107,7 @@ public class BlokusDuo {
                 if (p2CanMove) {
 
                     // Place tile for p2 and increment score
-                    p2Score += doMove(board, p2Tiles, P2, isHard);
+                    p2Score += doMove(board, p2Tiles, P2, isHard, selectedTile);
                 }
                 // Player 2 has no valid moves; skip turn
                 else {
