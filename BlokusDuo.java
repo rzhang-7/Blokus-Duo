@@ -123,6 +123,108 @@ public class BlokusDuo {
     }
 
     /*
+     * Method name: printRules
+     * Description: Prints the rules of the game.
+     */
+    public static void printRules() {
+        Scanner sc = IO.newScanner();
+
+        System.out.println(
+              "[@][@]   [@][@][O][O][@][O][@]   [O][@][@]   [O][O]"
+            + "\n[@][O][@][@][O][O][O]   [@][@][@][O][O][@][@][@][O][O]"
+            + "\n[@][O]                                          [@][@]"
+            + "\n   [@]          Welcome to BlokusDuo!              [@]"
+            + "\n[@][@]                                          [@][@]"
+            + "\n   [@]    BlokusDuo is a 2-player game played   [O]"
+            + "\n[@]       on a 14x14 grid. Each turn, players   [O][O]"
+            + "\n[@][@]    will place one of their Tetris-like   [@][O]"
+            + "\n[O][@][@]   pieces onto the board. The size     [@][O]"
+            + "\n[O]       of each placed tile determines how       [@]"
+            + "\n[O][O][O] many points they earn each turn.      [@][@]"
+            + "\n   [@]                                          [O][@]"
+            + "\n[@][@][@]     <Press [Enter] to continue>       [O][@]"
+            + "\n[O][@][O][@][@][@]      [@][@][O]            [O][O][O]"
+            + "\n[O][O][O]   [@][@][O][O][O][@]   [O][O][O][O][@][@][@]"
+        );
+        sc.nextLine();
+        System.out.println(
+              "[@][@]   [@][@][O][O][@][O][@]   [O][@][@]   [O][O]"
+            + "\n[@][O][@][@][O][O][O]   [@][@][@][O][O][@][@][@][O][O]"
+            + "\n[@][O]                                          [@][@]"
+            + "\n   [@]        Rules for Placing Tiles              [@]"
+            + "\n[@][@]                                          [@][@]"
+            + "\n   [@]    - Players will choose a tile by its   [O]"
+            + "\n[@]         name (e.g., P, T4, I5)              [O][O]"
+            + "\n[@][@]    - Players will enter a starting       [@][O]"
+            + "\n[O][@][@]   position for the tile (row, col)    [@][O]"
+            + "\n[O]       - Players may choose to rotate, flip,    [@]"
+            + "\n[O][O][O]   or shift the tile until it is in    [@][@]"
+            + "\n   [@]      a valid position (see next page)    [O][@]"
+            + "\n[@][@][@]     <Press [Enter] to continue>       [O][@]"
+            + "\n[O][@][O][@][@][@]      [@][@][O]            [O][O][O]"
+            + "\n[O][O][O]   [@][@][O][O][O][@]   [O][O][O][O][@][@][@]"
+        );
+        sc.nextLine();
+
+        System.out.println(
+              "[@][@]   [@][@][O][O][@][O][@]   [O][@][@]   [O][O]"
+            + "\n[@][O][@][@][O][O][O]   [@][@][@][O][O][@][@][@][O][O]"
+            + "\n[@][O]                                          [@][@]"
+            + "\n   [@]       Rules for Placing Tiles  (cont.)      [@]"
+            + "\n[@][@]                                          [@][@]"
+            + "\n   [@]    - The tile must fit within the board  [O]"
+            + "\n[@]       - The tile must not overlap with any  [O][O]"
+            + "\n[@][@]      existing tiles                      [@][O]"
+            + "\n[O][@][@] - Tiles placed by the player may ONLY [@][O]"
+            + "\n[O]         be connected by their CORNERS          [@]"
+            + "\n[O][O][O] - Available placement locations are   [@][@]"
+            + "\n   [@]      indicated by the * character        [O][@]"
+            + "\n[@][@][@]     <Press [Enter] to continue>       [O][@]"
+            + "\n[O][@][O][@][@][@]      [@][@][O]            [O][O][O]"
+            + "\n[O][O][O]   [@][@][O][O][O][@]   [O][O][O][O][@][@][@]"
+        );
+        sc.nextLine();
+
+        System.out.println(
+              "[@][@]   [@][@][O][O][@][O][@]   [O][@][@]   [O][O]"
+            + "\n[@][O][@][@][O][O][O]   [@][@][@][O][O][@][@][@][O][O]"
+            + "\n[@][O]                                          [@][@]"
+            + "\n   [@]               Ending the Game               [@]"
+            + "\n[@][@]                                          [@][@]"
+            + "\n   [@]  The player may choose to quit the game  [O]"
+            + "\n[@]     on their turn with the option to save.  [O][O]"
+            + "\n[@][@]  The game ends when neither player can   [@][O]"
+            + "\n[O][@][@] place any of their pieces on the      [@][O]"
+            + "\n[O]     board. Whichever player has the highest    [@]"
+            + "\n[O][O][O]  score at the end of the game wins.   [@][@]"
+            + "\n   [@]                                          [O][@]"
+            + "\n[@][@][@]     <Press [Enter] to continue>       [O][@]"
+            + "\n[O][@][O][@][@][@]      [@][@][O]            [O][O][O]"
+            + "\n[O][O][O]   [@][@][O][O][O][@]   [O][O][O][O][@][@][@]"
+        );
+        sc.nextLine();
+
+        System.out.println(
+            "[@][@]   [@][@][O][O][@][O][@]   [O][@][@]   [O][O]"
+            + "\n[@][O][@][@][O][O][O]   [@][@][@][O][O][@][@][@][O][O]"
+            + "\n[@][O]                                          [@][@]"
+            + "\n   [@]                                             [@]"
+            + "\n[@][@]                                          [@][@]"
+            + "\n   [@]                                          [O]"
+            + "\n[@]                   Good Luck!                [O][O]"
+            + "\n[@][@]                                          [@][O]"
+            + "\n[O][@][@]                                       [@][O]"
+            + "\n[O]                                                [@]"
+            + "\n[O][O][O]                                       [@][@]"
+            + "\n   [@]     <Press [Enter] to return to menu>    [O][@]"
+            + "\n[@][@][@]                                       [O][@]"
+            + "\n[O][@][O][@][@][@]      [@][@][O]            [O][O][O]"
+            + "\n[O][O][O]   [@][@][O][O][O][@]   [O][O][O][O][@][@][@]"
+        );
+        sc.nextLine();
+    }
+
+    /*
      * Method name: printBoard
      * Parameters: char[][] board - The game board
      * Description: Prints the current status of the board in game.
@@ -1246,6 +1348,7 @@ public class BlokusDuo {
                 case "3":
                 case "[3]":
                 case "how to play":
+                    printRules();
                     break;
 
                 // Quit
