@@ -2,7 +2,7 @@ import java.util.*;
 /*
  * Program name: Tile
  * Programmer: Raymond Zhang
- * Last modified: 06/07/2024
+ * Last modified: 18/06/2024
  * Description: Instance class for Blokus tiles
  */
 
@@ -190,6 +190,24 @@ public class Tile {
      */
     public void setPlaceable(boolean placeable) {
         this.placeable = placeable;
+    }
+
+    /*
+     * Method name: setPosR()
+     * Parameters: int posR - The new row position
+     * Description: Mutator method for the posR attribute.
+     */
+    public void setPosR(int posR) {
+        this.posR = posR;
+    }
+
+    /*
+     * Method name: setPosC()
+     * Parameters: int posC - The new column position
+     * Description: Mutator method for the posC attribute.
+     */
+    public void setPosC(int posC) {
+        this.posC = posC;
     }
 
     /*
