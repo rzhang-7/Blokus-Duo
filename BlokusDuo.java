@@ -1133,8 +1133,22 @@ public class BlokusDuo {
 
                 // Game is over when neither player can move
                 if (!p1CanMove && !p2CanMove) {
+
+                    // Print final board and score
+                    printBoard(board);
+                    printScore(p1Score, p2Score);
+
+                    // Print game over message
+                    System.out.println(
+                          "  ________                   ______"
+                        + "\n /  _____/____   _____ ____  \\____ \\__  _ ___ ______"
+                        + "\n/   \\  ___\\_  \\ /     \\ __ \\  /  |  \\ \\/ / __ \\ _ _ \\"
+                        + "\n\\    \\_\\  \\ __ \\  | | | ___/_/   |   \\  /  ___/| | \\/"
+                        + "\n \\______  /___ |__|_| |____/\\______  /_/ \\____/|_|"
+                        + "\n        \\/    \\/     \\/            \\/"
+                    );
                     System.out.println();
-                    System.out.println("**GAME OVER**");
+
                     // Scores are equal; tie game
                     if (p1Score == p2Score) {
                         System.out.printf("Tie Game: Both players scored %d points.%n", p1Score);
@@ -1143,12 +1157,6 @@ public class BlokusDuo {
                     else {
                         System.out.printf("Player %d wins!", (p1Score > p2Score ? 1 : 2));
                     }
-
-                    // Print final score
-                    System.out.println();
-                    System.out.println("Final score:");
-                    System.out.printf("  Player 1: %d%n", p1Score);
-                    System.out.printf("  Player 2: %d%n", p2Score);
 
                     // Return to main menu
                     System.out.println();
