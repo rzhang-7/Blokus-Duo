@@ -607,12 +607,11 @@ public class BlokusDuo {
         // Declare variables
         int r = 0, c = 0;
         String coords, tileTransformation;
-        String[] coordPair;
+        List<String> coordPair;
         boolean validCoord = false, placed = false, canPlace;
 
         // Create new scanner
         Scanner sc = IO.newScanner();
-        // System.out.printf("Tile %s is at (%d, %d)%n", tileName, r, c);
 
         // Get coordinates
         do {
@@ -620,7 +619,10 @@ public class BlokusDuo {
             coords = sc.nextLine();
 
             // Extract numbers from input string
-            coordPair = coords.split("[^(-?\\d+)]");
+            coordPair = new ArrayList<>(Arrays.asList(coords.split("\\D")));
+
+            // Remove empty strings
+            coordPair.removeIf(str -> str.equals(""));
 
             // Skip tile placement
             if (coords.equals(QUIT_VAL)) {
@@ -629,13 +631,13 @@ public class BlokusDuo {
             }
 
             // User entered more or less numbers than needed
-            else if (coordPair.length != 2) {
+            else if (coordPair.size() != 2) {
                 printError("Please enter two separated integers.");
             }
             // Extract r and c values
             else {
-                r = Integer.parseInt(coordPair[0].trim());
-                c = Integer.parseInt(coordPair[1].trim());
+                r = Integer.parseInt(coordPair.get(0).trim());
+                c = Integer.parseInt(coordPair.get(1).trim());
 
                 // Coordinates out of range
                 if (r <= 0 || r > BOARD_SIZE || c <= 0 || c > BOARD_SIZE) {
