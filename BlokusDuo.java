@@ -705,7 +705,7 @@ public class BlokusDuo {
                     System.out.println();
                     System.out.println("  [1] List tiles/Select a tile");
                     System.out.println("  [2] Save and quit game");
-                    System.out.println("  [3] Quit game without saving");
+                    System.out.println("  ["+QUIT_VAL+"] Quit game without saving");
 
                     // Get user input
                     System.out.print("Enter your selection: ");
@@ -921,8 +921,8 @@ public class BlokusDuo {
                             break;
 
                         // Quit without saving
-                        case "3":
-                        case "[3]":
+                        case QUIT_VAL:
+                        case "[0]":
                             // Get quit confirmation
                             System.out.print(
                                     "Are you sure you want to quit? All progress will be lost (y/n): ");
