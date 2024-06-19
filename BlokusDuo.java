@@ -985,6 +985,7 @@ public class BlokusDuo {
                                                     try {
                                                         Saves.writeSave(choiceSave, board, p1Score, p1Tiles, p2Score,
                                                                 p2Tiles, isHard);
+                                                        System.out.println();
                                                         System.out.println("Save successfully overwritten.");
                                                     }
                                                     // File overwrite was unsuccessful
@@ -997,6 +998,7 @@ public class BlokusDuo {
 
                                                     // Exit loop when done and return to main menu
                                                     validSave = true;
+                                                    menuSelect = true; // Break out of menu selection
                                                     running = false; // Break out of game loop
                                                     break;
 
