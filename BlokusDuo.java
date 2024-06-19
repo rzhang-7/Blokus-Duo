@@ -1119,6 +1119,12 @@ public class BlokusDuo {
                         System.out.printf("Player %d wins!", (p1Score > p2Score ? 1 : 2));
                     }
 
+                    // Print final score
+                    System.out.println();
+                    System.out.println("Final score:");
+                    System.out.printf("  Player 1: %d%n", p1Score);
+                    System.out.printf("  Player 2: %d%n", p2Score);
+
                     // Return to main menu
                     System.out.println();
                     System.out.println("Returning to main menu...");
