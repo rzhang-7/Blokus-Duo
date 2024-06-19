@@ -1351,6 +1351,10 @@ public class BlokusDuo {
                                     p2Score = Saves.getPlayerScore(choiceSave, 2);
                                     p2Tiles = Saves.getPlayerTiles(choiceSave, 2);
                                     isHard = Saves.getDifficulty(choiceSave);
+
+                                    System.out.printf("%nLoading \"%s\" on difficulty: %s%n", choiceSave,
+                                            (isHard ? "Hard" : "Easy"));
+
                                     runGame(board, p1Score, p1Tiles, p2Score, p2Tiles, isHard);
                                 }
                                 // Could not read file
