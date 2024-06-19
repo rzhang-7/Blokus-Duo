@@ -6,7 +6,7 @@ import java.util.*;
 /*
  * Program name: BlokusDuo
  * Programmer: Raymond Zhang
- * Last modified: 02/06/2024
+ * Last modified: 19/06/2024
  * Description: Driver code for the Blokus Duo game.
  */
 
@@ -444,7 +444,7 @@ public class BlokusDuo {
         // Check all tiles
         for (Map.Entry<String, Tile> entry : tiles.entrySet()) {
             // Check if tile has not been used and is placeable
-            if(!entry.getValue().isUsed() && entry.getValue().isPlaceable()) {
+            if (!entry.getValue().isUsed() && entry.getValue().isPlaceable()) {
                 // Get the available placements of each tile
                 tileMoves = entry.getValue().getMoves(board, player);
 
@@ -500,7 +500,7 @@ public class BlokusDuo {
         else {
             // Get random tile
             size = moves.size();
-            idx = (int)(Math.random() * size);
+            idx = (int) (Math.random() * size);
         }
 
         // Get tile piece
@@ -797,10 +797,13 @@ public class BlokusDuo {
         int saveIndex;
         String menuSelection, tileName, quitConfirmation, choiceSave, overwriteConfirmation;
         ArrayList<String> saveNames;
-        Tile selectedTile;
+        Tile selectedTile = null;
         boolean p1CanMove = true, p2CanMove = true, running = true, tileSelect = false,
                 validSave = false, menuSelect = false;
         Scanner sc = IO.newScanner();
+
+        // Update tile states for player 1
+        getAllMoves(board, p1Tiles, P1);
 
         // Game loop
         while (running) {
@@ -812,11 +815,12 @@ public class BlokusDuo {
                     printBoard(board);
                     printScore(p1Score, p2Score);
 
-                    // If player 2 placed a tile, its initial character on the board would have been '+'
+                    // If player 2 placed a tile, its initial character on the board would have been
+                    // '+'
                     // Change back to the player 2 character to avoid confusion during placement
-                    for(int i = 0; i<BOARD_SIZE; i++) {
-                        for(int j = 0; j<BOARD_SIZE; j++) {
-                            if(board[i][j] == PLACEABLE)
+                    for (int i = 0; i < BOARD_SIZE; i++) {
+                        for (int j = 0; j < BOARD_SIZE; j++) {
+                            if (board[i][j] == PLACEABLE)
                                 board[i][j] = P2;
                         }
                     }
@@ -1096,10 +1100,10 @@ public class BlokusDuo {
 
                 // Keep an empty space for player 2 on the first turn
                 // Player 1 used the bottom right starting position
-                if(board[START_1][START_1] == EMPTY)
+                if (board[START_1][START_1] == EMPTY)
                     board[START_1][START_1] = AVAIL;
                 // Player 1 used the top left starting position
-                else if(board[START_2][START_2] == EMPTY)
+                else if (board[START_2][START_2] == EMPTY)
                     board[START_2][START_2] = AVAIL;
 
                 // Check for available moves for p2
